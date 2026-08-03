@@ -79,6 +79,21 @@ Recall that on the same bird and the same latents, **consecutive-day centroid dr
 a ratio of 1.0× — no effect whatsoever.** The dispersion metric recovers a documented
 developmental effect that the centroid metric could not see. That is the gap closed.
 
+### Replicated in a second bird
+
+`grn397` (dph 56–94, endpoint taken from dph 88 since this bird was not recorded as far
+past crystallisation):
+
+| Bird | Effect | Its own floor | Margin |
+|---|---|---|---|
+| `grn394` | **1.43×** (log +0.355) | 1.15× | 2.6× |
+| `grn397` | **1.41×** (log +0.344) | 1.36× | 1.2× |
+
+Near-identical effect sizes from independent birds, both with the predicted sign. `grn397`
+has the smaller margin because its record stops at 94 dph, so its "crystallised" reference
+is both closer to the learning period and estimated from fewer days — a shorter record
+raises the floor as well as weakening the contrast.
+
 ### An artefact that reversed the sign, and how it was caught
 
 The first version selected sounds within a **fixed distance** of each mode. That keeps

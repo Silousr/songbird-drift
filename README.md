@@ -104,9 +104,10 @@ warning sign.
 
 ## Validation
 
-Recovered a documented effect from public data: **juvenile song is 1.43× more variable than
-crystallized song** in a zebra finch recorded from 57 to 114 days post-hatch, against a
-1.15× floor ([VALIDATION_REPORT.md](VALIDATION_REPORT.md)).
+Recovered a documented effect from public data: **juvenile song is ~1.4× more variable than
+crystallized song**, replicated in two independent zebra finches — 1.43× against a 1.15×
+floor in one, 1.41× against 1.36× in the other
+([VALIDATION_REPORT.md](VALIDATION_REPORT.md), [Phase 5](PHASE5_DISPERSION_REPORT.md)).
 
 Worth knowing *how* that went. The consecutive-day framing **failed** this test outright
 (ratio 1.0×, no effect at all). Two things rescued it, and both became recommendations:
@@ -166,7 +167,7 @@ tests/             each written before its implementation
 - Floors were measured over ≤3-day separations in three Bengalese finches. Whether
   day-to-day variability is stationary over weeks is **untested** — measure your own
   baseline on the timescale you plan to use.
-- Validated against a **developmental** effect, not a pharmacological one. No public dataset
+- Validated against a **developmental** effect in two birds, not a pharmacological one. No public dataset
   contains a pharmacological critical-period manipulation with annotated audio. The nearest
   available test, deafening-induced deterioration (Zai et al., 76 birds), has not been run.
 - Syntax is first-order (adjacent pairs). Longer-range sequence structure is not covered.
