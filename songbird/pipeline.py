@@ -28,8 +28,11 @@ import soundfile as sf
 from songbird.drift import (
     bootstrap_dispersion_ci,
     bootstrap_drift_ci,
+    bout_sequences,
     split_half_dispersion_null,
     split_half_null,
+    split_half_syntax_null,
+    syntax_divergence,
 )
 from songbird.features.spectrogram import SyllableSpectrogram
 
@@ -87,6 +90,7 @@ class BirdResult:
     within_type_variance: float
     centroid_floor: float
     dispersion_floor: float
+    syntax_floor: float
     day_pairs: list[dict] = field(default_factory=list)
 
 
@@ -106,7 +110,8 @@ class AnalysisResult:
                 f"  noise floor  centroid {bird.centroid_floor:.4f} (standardised "
                 f"{bird.centroid_floor / bird.within_type_variance:.4f})   "
                 f"dispersion {bird.dispersion_floor:.4f} "
-                f"({np.exp(bird.dispersion_floor):.2f}x variance)"
+                f"({np.exp(bird.dispersion_floor):.2f}x variance)   "
+                f"syntax {bird.syntax_floor:.4f} bits"
             )
             for pair in bird.day_pairs:
                 lines.append(
@@ -116,7 +121,9 @@ class AnalysisResult:
                     f"[{pair['n_types_exceeding_centroid_floor']}/{pair['n_types']} "
                     f"types over floor], "
                     f"dispersion {pair['dispersion_drift']:+.4f} "
-                    f"[{pair['n_types_exceeding_dispersion_floor']}/{pair['n_types']}]"
+                    f"[{pair['n_types_exceeding_dispersion_floor']}/{pair['n_types']}], "
+                    f"syntax {pair['syntax_divergence']:.4f}"
+                    f"{' OVER FLOOR' if pair['syntax_exceeds_floor'] else ''}"
                 )
         return "\n".join(lines)
 
@@ -185,7 +192,30 @@ def extract_features(table: pd.DataFrame, config: AnalysisConfig) -> FeatureSet:
                       np.array(bouts), np.array(birds))
 
 
-def _analyse_bird(features: FeatureSet, config: AnalysisConfig, bird: str) -> BirdResult:
+def _syntax_by_day(table, bird: str, types) -> tuple[dict, float]:
+    """Per-day bout sequences and the within-day syntax floor.
+
+    Uses the FULL table, never the per-day subsample: dropping syllables at random would
+    splice together transitions the bird never produced, which is precisely the quantity
+    being measured.
+    """
+    rows = table[(table["bird"] == bird) & (table["label"].isin(types))]
+    per_day, nulls = {}, []
+    for day, group in rows.groupby("day", sort=True):
+        sequences = bout_sequences(group)
+        per_day[str(day)] = sequences
+        if len(sequences) >= 4:
+            try:
+                nulls.extend(split_half_syntax_null(sequences, types, n_draws=100,
+                                                    seed=0).tolist())
+            except ValueError:
+                continue
+    floor = float(np.percentile(nulls, 95)) if nulls else float("nan")
+    return per_day, floor
+
+
+def _analyse_bird(features: FeatureSet, config: AnalysisConfig, bird: str,
+                  table=None) -> BirdResult:
     from sklearn.decomposition import PCA
 
     mask = features.birds == bird
@@ -223,6 +253,10 @@ def _analyse_bird(features: FeatureSet, config: AnalysisConfig, bird: str) -> Bi
     dispersion_floor = (float(np.percentile(np.abs(dispersion_null), 95))
                         if dispersion_null else np.nan)
 
+    syntax_by_day, syntax_floor = ({}, float("nan"))
+    if table is not None:
+        syntax_by_day, syntax_floor = _syntax_by_day(table, bird, types)
+
     pairs = []
     for i, day_a in enumerate(unique_days):
         for day_b in unique_days[i + 1:]:
@@ -253,7 +287,21 @@ def _analyse_bird(features: FeatureSet, config: AnalysisConfig, bird: str) -> Bi
             separation = (dt.date.fromisoformat(day_b)
                           - dt.date.fromisoformat(day_a)).days
             mean_centroid = float(np.mean(centroids))
+
+            divergence = float("nan")
+            if day_a in syntax_by_day and day_b in syntax_by_day:
+                try:
+                    divergence = syntax_divergence(syntax_by_day[day_a],
+                                                   syntax_by_day[day_b], types)
+                except ValueError:
+                    divergence = float("nan")
+
             pairs.append({
+                "syntax_divergence": divergence,
+                "syntax_exceeds_floor": bool(
+                    not np.isnan(divergence) and not np.isnan(syntax_floor)
+                    and divergence > syntax_floor
+                ),
                 "day_a": day_a, "day_b": day_b, "separation_days": separation,
                 "n_types": len(centroids),
                 "centroid_drift": mean_centroid,
@@ -269,7 +317,7 @@ def _analyse_bird(features: FeatureSet, config: AnalysisConfig, bird: str) -> Bi
         n_days=len(unique_days), days=list(unique_days), reference_day=reference,
         types=[str(t) for t in types], within_type_variance=scale,
         centroid_floor=centroid_floor, dispersion_floor=dispersion_floor,
-        day_pairs=pairs,
+        syntax_floor=syntax_floor, day_pairs=pairs,
     )
 
 
@@ -284,7 +332,7 @@ def analyse(table: pd.DataFrame, config: AnalysisConfig | None = None) -> Analys
     for bird in sorted(np.unique(features.birds)):
         if len(np.unique(features.days[features.birds == bird])) < 2:
             continue
-        results[str(bird)] = _analyse_bird(features, config, bird)
+        results[str(bird)] = _analyse_bird(features, config, bird, table)
     if not results:
         raise ValueError(
             "no bird had at least two recording days; drift needs a time axis"

@@ -16,7 +16,7 @@ measured it is cited. If you read nothing else, read §1 and §7.
 | 3 | **Compare every timepoint against a *pooled baseline*, not against the previous timepoint** | On the validation dataset this was the difference between detecting a known effect and missing it entirely. |
 | 4 | **Collect ≥5 baseline days per bird, all before any manipulation** | The baseline defines the bird's own noise floor. It cannot be borrowed from another bird — measured floors differ 3-fold between individuals. |
 | 5 | **Hold the recording schedule constant, including time of day** | Two days in a public "baseline" dataset were unusable partly because they were morning-only while the rest spanned 10–14 h. |
-| 6 | **Report both drift metrics, each against its own floor** | A manipulation may move a syllable, make it sloppier, or both. They are statistically independent, and "no effect" is only interpretable if both were measured. |
+| 6 | **Report all three drift metrics, each against its own floor** | A manipulation may move a syllable, make it sloppier, or reorder the sequence. They are largely independent, and "no effect" is only interpretable if all three were measured. |
 | 7 | **The bird is the unit of replication** | Pooling syllables across birds is pseudo-replication and can inflate significance by orders of magnitude. |
 
 ## 2. How much song, and in what unit
@@ -131,12 +131,28 @@ gy6or6: 8000 syllables, 583 bouts, 4 days, 11 syllable types
   under no change it is negative about half the time. A negative value means the observed
   separation is smaller than sampling noise alone would produce.
 
+## 6b. The three metrics
+
+| Metric | Question | Statistic | Floor is centred on |
+|---|---|---|---|
+| **Centroid** | did the syllable *move*? | unbiased squared distance between centroids | zero (bias-corrected) |
+| **Dispersion** | did it get *sloppier*? | log ratio of total variance | zero |
+| **Syntax** | did the *order* change? | Jensen–Shannon divergence of transition bigrams, in bits | a **positive** value |
+
+The syntax floor is the one that catches people out. Jensen–Shannon divergence is
+non-negative by construction, so two finite samples from the *same* syntax still differ,
+and the smaller the sample the more they differ. A raw syntax divergence therefore means
+nothing on its own — it must always be read against the split-half floor for that bird at
+that number of bouts. There is no bias correction that could centre it on zero.
+
+Note also that syntax is computed on the **full** annotation set, never a subsample:
+dropping syllables at random splices together transitions the bird never produced.
+
 ## 7. What this toolkit will not tell you
 
-- **It measures acoustics, not syntax.** Changes in the *order* of syllables are not
-  covered. If your manipulation is expected to affect sequencing, this is not sufficient.
-- **It measures centroid and total variance.** A change in the *shape* of the rendition
-  cloud that preserved both would be missed.
+- **It measures centroid, total variance, and first-order (bigram) syntax.** A change in
+  the *shape* of the rendition cloud that preserved its trace, or a change in longer-range
+  sequence structure than adjacent pairs, would be missed.
 - **The floors were measured over ≤3-day separations in three Bengalese finches.** Whether
   day-to-day variability stays constant over weeks is untested and cannot be assumed;
   measure your own baseline over the timescale you plan to use.
