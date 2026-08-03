@@ -20,7 +20,10 @@ data/raw/
 *.h5
 *.npz
 
-# Keep small provenance metadata
+# Keep figures and small provenance metadata
+!results/figures/
+!results/figures/*.png
+
 !data/phase0/**/*.json
 !data/phase0/**/*.txt
 
