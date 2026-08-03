@@ -19,6 +19,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from songbird.ingest.schema import SYLLABLE_COLUMNS, empty_table, finalise_table
+
 __all__ = [
     "DateMismatchError",
     "Recording",
@@ -30,19 +32,6 @@ __all__ = [
     "parse_recording_filename",
     "read_annotation_csv",
 ]
-
-SYLLABLE_COLUMNS = (
-    "bird",
-    "day",
-    "timestamp",
-    "audio_file",
-    "template",
-    "onset_s",
-    "offset_s",
-    "duration_s",
-    "label",
-    "source",
-)
 
 #: Policies for a filename date that contradicts its directory date.
 DATE_MISMATCH_POLICIES = ("raise", "skip")
@@ -153,19 +142,8 @@ def read_annotation_csv(path: str | Path) -> list[Syllable]:
     return syllables
 
 
-def _empty_table() -> pd.DataFrame:
-    return pd.DataFrame({column: pd.Series(dtype=object) for column in SYLLABLE_COLUMNS})
-
-
 def _finalise(rows: list[dict], coverage: dict[str, int]) -> pd.DataFrame:
-    table = pd.DataFrame(rows, columns=list(SYLLABLE_COLUMNS)) if rows else _empty_table()
-    if rows:
-        # Keep `day` as datetime.date rather than letting pandas coerce to datetime64,
-        # so day identity stays exact and comparable to plain dates.
-        table["day"] = pd.Series([row["day"] for row in rows], dtype=object)
-        table = table.sort_values(["timestamp", "onset_s"], kind="stable").reset_index(
-            drop=True
-        )
+    table = finalise_table(rows) if rows else empty_table()
     table.attrs.update(coverage)
     return table
 
@@ -254,7 +232,7 @@ def load_dataset(
         load_day(day_dir, source=source, on_date_mismatch=on_date_mismatch)
         for day_dir in day_dirs
     ]
-    combined = pd.concat(tables, ignore_index=True) if tables else _empty_table()
+    combined = pd.concat(tables, ignore_index=True) if tables else empty_table()
     combined = combined.sort_values(["bird", "timestamp", "onset_s"], kind="stable")
     combined = combined.reset_index(drop=True)
 
