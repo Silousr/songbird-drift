@@ -20,6 +20,7 @@ SYLLABLE_COLUMNS = (
     "day",         # datetime.date of the recording
     "timestamp",   # full datetime of the bout
     "audio_file",  # bout identifier; the sampling unit for all inference
+    "audio_path",  # resolvable path to the bout audio, for feature extraction
     "template",    # experimental condition tag from the recorder, if any
     "onset_s",     # syllable onset, seconds from the start of the bout
     "offset_s",

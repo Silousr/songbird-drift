@@ -113,6 +113,7 @@ def load_from_manifest(
                 "day": timestamp.date(),
                 "timestamp": timestamp.to_pydatetime(),
                 "audio_file": Path(record.audio_path).name,
+                "audio_path": str(record.audio_path),
                 "template": None,
                 "onset_s": float(onset),
                 "offset_s": float(offset),

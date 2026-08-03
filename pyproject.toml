@@ -20,6 +20,9 @@ dependencies = [
 segment = ["vak>=1.1.0"]
 dev = ["pytest"]
 
+[project.scripts]
+songbird = "songbird.cli:main"
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"

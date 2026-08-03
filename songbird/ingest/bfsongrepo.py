@@ -197,6 +197,9 @@ def load_day(
                     "day": recording.day,
                     "timestamp": recording.timestamp,
                     "audio_file": annotation_path.name[: -len(".csv")],
+                    "audio_path": str(
+                        annotation_path.with_name(annotation_path.name[: -len(".csv")])
+                    ),
                     "template": recording.template,
                     "onset_s": syllable.onset_s,
                     "offset_s": syllable.offset_s,
