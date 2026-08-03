@@ -10,7 +10,17 @@ and probabilistic syntax. Not language.
 ## Status
 
 **Phase 0 (data audit) complete — verdict GO.** See [PHASE0_DATA_AUDIT.md](PHASE0_DATA_AUDIT.md).
-No analysis code written yet; Phase 1 has not started.
+
+**Phase 1 (ingestion + segmentation) in progress.** All 18 Bengalese finch bird-days
+(4 birds, 5.5 GB) ingested. Amplitude segmentation reaches **F1 = 0.969** against the hand
+annotations on 14 held-out bird-days (22,324 syllables), with the threshold fitted per bird
+on a separate day. TweetyNet label recovery is running; that is the non-circular half of the
+gate and the phase is not complete until it reports.
+
+Two defects in the published dataset were caught by the loader's guardrails and are
+documented in [DECISION_LOG.md](DECISION_LOG.md): a signed 16-bit filename counter that
+wraps negative in `bl26lb16/042012`, and 10 files in `gy6or6/032212` that are dated nine
+days earlier and belong to a different experimental phase (`washout`).
 
 ## Planned scope
 
