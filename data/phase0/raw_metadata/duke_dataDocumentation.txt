@@ -1,0 +1,242 @@
+This readme file was generated on 2022-10-18 by Samuel Brudner
+
+
+GENERAL INFORMATION
+
+Title of Dataset: Juvenile zebra finch syllables for data-driven analysis of development
+
+Author/Principal Investigator Information
+Name: Richard Mooney
+ORCID: 0000-0002-3308-1367
+Institution: Dept. of Neurobiology, Duke University
+Address: 
+301C Bryan Research Building
+311 Research Drive
+Durham, NC 27710-4432
+Email: mooney@neuro.duke.edu
+
+Author/Associate or Co-investigator Information
+Name: John Pearson
+ORCID: 0000-0002-9876-7837
+Institution: Dept of Biostatistics and Bioinformatics, Duke University
+Address: 
+B255 Levine Science Research Center
+Durham, NC 27710
+Email: john.pearson@duke.edu
+
+
+Dates of data collection:  Oct 2019 - Jan 2021
+
+Geographic location of data collection: Duke University, Durham, NC
+
+Information about funding sources that supported the collection of the data: NIH 5R01NS099288, NIH 1RF1NS118424
+
+
+SHARING/ACCESS INFORMATION
+
+Licenses/restrictions placed on the data: 
+
+Links to publications that cite or use the data: 
+
+Links to other publicly accessible locations of the data: 
+
+Links/relationships to ancillary data sets: 
+
+Was data derived from another source? No
+If yes, list source(s): 
+
+Recommended citation for this dataset: 
+
+
+DATA & FILE OVERVIEW
+
+File List: {birdId}_hatchdate.mat,{birdId}_specs.zip, {birdId}_segs.zip, {birdId}_proj.zip, {birdId}_raw_wav.zip, {birdId}_table.mat, trained_vae/{birdId}_vae.tar, predicted_age_models/ffnn_{birdId}_table.mat, predicted_age_models_fewerLayers/ffnn_{birdId}_table.mat, gauss_models/{birdId}_{syllable}_checkpoint_neg_loss=-{loss_value}.pt, gauss_models_64/{birdId}_{syllable}_checkpoint_neg_loss=-{loss_value}.pt, gauss_models_layers/{birdId}_{syllable}_checkpoint_neg_loss=-{loss_value}.pt
+
+Relationship between files, if important: For a given birdId, {birdId}_raw_wav.zip and {birdId}_segs.zip have matched directory structures and file names, following SAP convention and, in the case of the segmentation files, as written by AVA (Goffinet et al., 2021). For a given birdId, {birdId}_specs.zip and {birdId}_proj.zip have matched directory structure and file names. For matched file names, information refers to the same syllables in the same sequence, as written by AVA (Goffinet et al., 2021). Files for bird grn394, syllable B, are used as examples in submission for publication.
+
+Additional related data collected that was not included in the current data package: Small amounts of directed song were collected for grn475 and sil469, but associated raw wav files were not included.
+
+Are there multiple versions of the dataset? No
+If yes, name of file(s) that was updated: 
+Why was the file updated? 
+When was the file updated? 
+
+
+METHODOLOGICAL INFORMATION
+
+Description of methods used for collection/generation of data:
+
+We raised 5 juvenile male zebra finches in their home cages where their father was the sole adult male and song model. To begin collecting song data, we isolated each juvenile in a sound box equipped with a microphone. We collected sound-triggered audio data at 44100 Hz with SAP (3 birds; Tchernichovski, 2000) or at 32000 Hz with EvTaf (2 birds; Tumer, 2007). We recorded until birds reached at least 94dph.
+
+Methods for processing the data:
+
+To extract the acoustic features of song syllables, we used a variational autoencoder, following the general procedures described in \cite{Goffinet.2021}. We performed this procedure separately for each bird in our dataset. In brief, we hand-tuned sound amplitude-based segmentation parameters to extract all individual sounds from the entire developmental audio record of each animal. We saved a spectrogram corresponding to each sound, manually tuning spectrogram floor and ceiling values to a range that captured variation in vocal sound intensity but excluded quiet background noise. These clipped syllable spectrograms were rescaled so all values fell in the interval [0,1]. For each bird, we designated 30,000 random sound spectrograms as the bird-specific VAE training dataset. For the three birds collected using SAP (Tchernichovski, 2000) we trained the autoencoder for 500 epochs; for the two birds collected with EvTAF (Tumer, 2007), we trained the autoencoder for 100 epochs after observing qualitatively successful reconstruction accuracy at that reduced training duration. Finally, the resulting trained VAEs were used to calculate a latent representation of every sound in each animal dataset, by calculating the mean of the latent variational posterior given by the trained VAE encoder.
+
+After calculating a latent representation for every sound in the dataset, the latents were embedded in a 2-dimensional UMAP to visualize clusters. By investigating the underlying spectrograms of renditions in each cluster, we were able to assign meaningful category labels to different clusters. Some categories (like cage noise and call types) were discarded. We retained for further analysis only clear clusters corresponding to syllable types represented in the animal's crystallized endpoint song. Finally, we performed within-syllable principal components analysis to find the primary axes of variation exhibited by syllables over the course of development.
+
+For each animal, we partitioned the entire collected repertoire of song syllables into a training set and an analysis set. We trained predicted age networks, using the the 32-dimensional latent vector describing each observed spectrogram as network input. The network minimized an error consisting of squared prediction error and a regularization term consisting of the sum of squares of the network weights. These terms were combined with weights given by Bayesian regularization (Foresee,1997) by training the network in Matlab with the training function parameter set to “trainbr.” We included regularization in order to “smooth” the predicted age function in acoustic space, to improve generalizability for a different set of experiments in which probe days of data were systematically withheld from training. The training data input to this procedure was automatically partitioned by Matlab into a 70/15/15 split corresponding to training, test, and validation sets respectively. Training iterated until performance on the test set failed to improve for three consecutive epochs, or until 30 minutes had elapsed. The validation subdivision was unused, as we used a previously withheld analysis partition for all subsequent analysis that used our trained models.
+
+Instrument- or software-specific information needed to interpret the data: MATLAB is needed to open .mat files. Python (PyTorch) is needed to open .tar and .pt files, which store trained PyTorch models. The .tar vae models are trained VAEs using the architecture in Goffinet et al. 2021. The Gaussian models instantiate the 'CHOLESKY' class defined at https://github.com/SamuelBrudner/juvenile_syllable_analysis
+
+
+People involved with sample collection, processing, analysis and/or submission: 
+Samuel Brudner, John Pearson, Richard Mooney
+
+DATA-SPECIFIC INFORMATION FOR: {birdID}_hatchdate.mat
+Each file contains a matlab datetime variable "hatchdate" storing the hatchdate of bird in the filename.
+
+DATA-SPECIFIC INFORMATION FOR: {birdID}_raw_wav.zip
+This unzips to a directory structure containing the raw audio wave files from throughout development for each bird. The files are organized into subdirectories with numeric names, which pick out the animal age (in whole number days post hatch) at the time enclosed files were recorded. This directory structure, and the wav file naming convention, follow SAP (Tchernichovski, 2000) data collection convention.
+
+DATA-SPECIFIC INFORMATION FOR: {birdID}_specs.zip
+This unzips to a directory structure containing all segmented spectrograms. The files are organized into subdirectories indicating days post hatch, like the raw wav file directory structure. The files are HDF5 format, with 20 sounds saved per file. The files were generated from wav recordings using AVA (Goffinet et al., 2021).
+
+DATA-SPECIFIC INFORMATION FOR: {birdID}_segs.zip
+This unzips to a directory structure containing all detected segment onsets and offsets. The file directory structure and naming convention is linked to the raw wav files for each bird (ie, sound segments in wav file 75/filename.wav are stored in 75/filename.txt.) The files were generated from wav recordings using AVA (Goffinet et al., 2021).
+
+DATA-SPECIFIC INFORMATION FOR: {birdID}_proj.zip
+This unzips to a directory structure containing all VAE latent space representations of spectrograms. The file directory structure and naming convention is linked to the spectrogram files for each bird (ie, spectrogram 3 in file 75/filename.hdf in the specs.zip folder is represented by the third entry in 75/filename.hdf in the proj.zip folder.) The files were generated from wav recordings using AVA (Goffinet et al., 2021).
+
+DATA-SPECIFIC INFORMATION FOR: grn394_table.mat
+
+Number of variables: 16
+
+Number of cases/rows: 429379
+
+Variable List: 
+bird: the ID assigned to the bird
+hdf5specName, hdf5_index: the filename and index to data representing the syllable's associated spectrogram
+age: the age (doh) at which the syllable was produced
+dph: the integer age in days (floor of age)
+type: the syllable type label of the rendition
+datetime: the rendition time
+file: the name of the audio file that includes this syllable rendition
+duration: the duration of the syllable
+latent: the 32D latent space mean of the VAE encoder representation of the syllable
+embed: UMAP coordinates of the syllable
+pca: the coordinates of the rendition in latent space principal components (calculated on a per syllable type basis)
+pca_tsquared: Hotelling's t-squared statistic from syllable-type pca
+partition: partition label for training vs analyzing predicted age network, Gaussian distribution models. Note "laser" label is a dummy label generated for use in another context on 10 randomly selected datapoints.
+ffnn_predicted_age: the production age predicted by a feedforward neural net on the basis of the syllable's latent space coordinates
+
+
+DATA-SPECIFIC INFORMATION FOR: grn395_table.mat
+
+Number of variables: 16
+
+Number of cases/rows: 215872
+
+Variable List: 
+bird: the ID assigned to the bird
+hdf5specName, hdf5_index: the filename and index to data representing the syllable's associated spectrogram
+age: the age (doh) at which the syllable was produced
+dph: the integer age in days (floor of age)
+type: the syllable type label of the rendition
+datetime: the rendition time
+file: the name of the audio file that includes this syllable rendition
+duration: the duration of the syllable
+latent: the 32D latent space mean of the VAE encoder representation of the syllable
+embed: UMAP coordinates of the syllable
+pca: the coordinates of the rendition in latent space principal components (calculated on a per syllable type basis)
+pca_tsquared: Hotelling's t-squared statistic from syllable-type pca
+partition: partition label for training vs analyzing predicted age network, Gaussian distribution models. Note "laser" label is a dummy label generated for use in another context on 10 randomly selected datapoints.
+ffnn_predicted_age: the production age predicted by a feedforward neural net on the basis of the syllable's latent space coordinates
+
+
+
+DATA-SPECIFIC INFORMATION FOR: grn397_table.mat
+
+Number of variables: 16
+
+Number of cases/rows: 257212
+
+Variable List: 
+bird: the ID assigned to the bird
+hdf5specName, hdf5_index: the filename and index to data representing the syllable's associated spectrogram
+age: the age (doh) at which the syllable was produced
+dph: the integer age in days (floor of age)
+type: the syllable type label of the rendition
+datetime: the rendition time
+file: the name of the audio file that includes this syllable rendition
+duration: the duration of the syllable
+latent: the 32D latent space mean of the VAE encoder representation of the syllable
+embed: UMAP coordinates of the syllable
+pca: the coordinates of the rendition in latent space principal components (calculated on a per syllable type basis)
+pca_tsquared: Hotelling's t-squared statistic from syllable-type pca
+partition: partition label for training vs analyzing predicted age network, Gaussian distribution models. Note "laser" label is a dummy label generated for use in another context on 10 randomly selected datapoints.
+ffnn_predicted_age: the production age predicted by a feedforward neural net on the basis of the syllable's latent space coordinates
+
+
+DATA-SPECIFIC INFORMATION FOR: grn475_table.mat
+
+Number of variables: 16
+
+Number of cases/rows: 97740
+
+Variable List: 
+bird: the ID assigned to the bird
+hdf5specName, hdf5_index: the filename and index to data representing the syllable's associated spectrogram
+age: the age (doh) at which the syllable was produced
+dph: the integer age in days (floor of age)
+type: the syllable type label of the rendition
+datetime: the rendition time
+file: the name of the audio file that includes this syllable rendition
+duration: the duration of the syllable
+latent: the 32D latent space mean of the VAE encoder representation of the syllable
+embed: UMAP coordinates of the syllable
+pca: the coordinates of the rendition in latent space principal components (calculated on a per syllable type basis)
+pca_tsquared: Hotelling's t-squared statistic from syllable-type pca
+partition: partition label for training vs analyzing predicted age network, Gaussian distribution models. Note "laser" label is a dummy label generated for use in another context on 50 randomly selected datapoints.
+ffnn_predicted_age: the production age predicted by a feedforward neural net on the basis of the syllable's latent space coordinates
+
+
+DATA-SPECIFIC INFORMATION FOR: sil469_table.mat
+
+Number of variables: 16
+
+Number of cases/rows: 97740
+
+Variable List: 
+bird: the ID assigned to the bird
+hdf5specName, hdf5_index: the filename and index to data representing the syllable's associated spectrogram
+age: the age (doh) at which the syllable was produced
+dph: the integer age in days (floor of age)
+type: the syllable type label of the rendition
+datetime: the rendition time
+file: the name of the audio file that includes this syllable rendition
+duration: the duration of the syllable
+latent: the 32D latent space mean of the VAE encoder representation of the syllable
+embed: UMAP coordinates of the syllable
+pca: the coordinates of the rendition in latent space principal components (calculated on a per syllable type basis)
+pca_tsquared: Hotelling's t-squared statistic from syllable-type pca
+partition: partition label for training vs analyzing predicted age network, Gaussian distribution models.
+ffnn_predicted_age: the production age predicted by a feedforward neural net on the basis of the syllable's latent space coordinates
+
+
+DATA-SPECIFIC INFORMATION FOR: trained_vaes/grn394_vae.tar,grn395_vae.tar,grn397_vae.tar,grn475_vae.tar,sil469_vae.tar
+Bird-specific trained variational auto encoders that convert 258x258 spectrogram image representations of syllables into posterior distributions in 32-dimensional latent space, according to Goffinet et al., 2021
+
+DATA-SPECIFIC INFORMATION FOR: gauss_models/{birdID}_{syllType}_checkpoint_neg_loss=-{val}.pt
+Syllable-specific trained neural network that takes normalize age as input and returns Gaussian distributions in latent space corresponding to the likely locations of syllable renditions at that age.
+
+DATA-SPECIFIC INFORMATION FOR: gauss_models_64/{birdID}_{syllType}_checkpoint_neg_loss=-{val}.pt
+Syllable-specific trained neural network that takes normalize age as input and returns Gaussian distributions in latent space corresponding to the likely locations of syllable renditions at that age. Uses fewer nodes per layer than the models in the gauss_models directory.
+
+DATA-SPECIFIC INFORMATION FOR: gauss_models_layers/{birdID}_{syllType}_checkpoint_neg_loss=-{val}.pt
+Syllable-specific trained neural network that takes normalize age as input and returns Gaussian distributions in latent space corresponding to the likely locations of syllable renditions at that age. Shallower networks than the models in the gauss_models directory.
+
+
+DATA-SPECIFIC INFORMATION FOR: predicted_age_models/{birdID}_ffnn_table.mat
+Variable List:
+bird: the ID assigned to the bird
+type: the syllable type being modeled
+ffnn_l2a: a neural network that predicts age from location in latent space
+ffnn_info_l2a: a struct containing information about the training protocol, and about model improvement during training
+
+DATA-SPECIFIC INFORMATION FOR: predicted_age_models_fewerLayers/{birdID}_ffnn_table.mat
+Variable List:
+bird: the ID assigned to the bird
+type: the syllable type being modeled
+ffnn_l2a: a neural network that predicts age from location in latent space using fewer network layers than the models in 'predicted_age_models'
+ffnn_info_l2a: a struct containing information about the training protocol, and about model improvement during training
+

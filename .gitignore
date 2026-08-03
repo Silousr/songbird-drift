@@ -1,0 +1,30 @@
+# Environments
+.venv/
+__pycache__/
+*.py[cod]
+.uv/
+
+# Bulk data — never commit. Derived inventories under data/phase0/ are committed explicitly.
+data/duke/
+data/canary/
+data/bfsongrepo/
+data/zai/
+data/raw/
+*.wav
+*.cbin
+*.zip
+*.tar.gz
+*.rar
+*.mat
+*.hdf5
+*.h5
+*.npz
+
+# Keep small provenance metadata
+!data/phase0/**/*.json
+!data/phase0/**/*.txt
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,261 @@
+{
+ "name": "Data from: Juvenile zebra finch syllables for data-driven analysis of development",
+ "description": "Learning skilled behaviors requires intensive practice over days months or years. Behavioral hallmarks of practice include exploratory variation and long-term improvements both of which can be impacted by circadian processes. During weeks of vocal practice the juvenile male zebra finch transforms highly variable and simple song into a stable and precise copy of an adult tutor's complex song. Song variability and performance in juvenile finches also exhibit circadian structure that could influence this long-term learning process. In fact one influential study reported juvenile song regresses towards immature performance overnight while another suggested a more complex pattern of overnight change. However neither of these studies thoroughly examined how circadian patterns of variability may structure the production of more or less mature songs. Here we relate the circadian dynamics of song maturation to circadian patterns of song variation leveraging a combination of data-driven approaches. In particular we analyze juvenile singing in learned feature space that supports both data-driven measures of song maturity and generative developmental models of song production. These models reveal that circadian fluctuations in variability lead to especially regressive morning variants even without overall overnight regression and highlight the utility of data-driven generative models for untangling these contributions.",
+ "identifier": [
+  {
+   "@type": "PropertyValue",
+   "value": "10.7924/r4j38x43h",
+   "propertyID": "doi"
+  },
+  {
+   "@type": "PropertyValue",
+   "value": "ark:/87924/r4j38x43h",
+   "propertyID": "ark"
+  },
+  {
+   "@type": "PropertyValue",
+   "value": "q524jp673"
+  }
+ ],
+ "@context": "https://schema.org",
+ "@type": "Dataset",
+ "author": [
+  {
+   "@type": "Person",
+   "affiliation": "Duke University",
+   "name": "Brudner, Samuel",
+   "sameAs": "https://orcid.org/https://orcid.org/0000-0002-6043-9328"
+  },
+  {
+   "@type": "Person",
+   "affiliation": "Duke University",
+   "name": "Mooney, Richard",
+   "sameAs": "https://orcid.org/https://orcid.org/0000-0002-3308-1367"
+  },
+  {
+   "@type": "Person",
+   "affiliation": "Duke University",
+   "name": "Pearson, John",
+   "sameAs": "https://orcid.org/https://orcid.org/0000-0002-9876-7837"
+  }
+ ],
+ "datePublished": "2022-12-05",
+ "funding": [
+  {
+   "@type": "Grant",
+   "identifier": "NIH 1RF1NS118424 NIH 5R01NS099288",
+   "funder": [
+    {
+     "@type": "Organization",
+     "name": "NIH"
+    }
+   ]
+  }
+ ],
+ "keywords": [
+  "Motor learning",
+  "Behavioral assessment"
+ ],
+ "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+ "genre": [
+  "Code",
+  "Raw data",
+  "Audiovisual",
+  "Tabular"
+ ],
+ "publisher": [
+  {
+   "@type": "Organization",
+   "name": "Duke Research Data Repository"
+  }
+ ],
+ "version": "1",
+ "distribution": [
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn394_specs.zip",
+   "contentSize": "46853081282"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn395_proj.zip",
+   "contentSize": "265675233"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn395_hatchdate.mat",
+   "contentSize": "538"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn395_specs.zip",
+   "contentSize": "29580124994"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn395_raw_wav.zip",
+   "contentSize": "99935226500"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn475_proj.zip",
+   "contentSize": "85761858"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/dataDocumentation.txt",
+   "contentSize": "17240"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn397_proj.zip",
+   "contentSize": "208637398"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn475_table.mat",
+   "contentSize": "41275776"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn397_segs.zip",
+   "contentSize": "33012214"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn394_proj.zip",
+   "contentSize": "301158911"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn395_table.mat",
+   "contentSize": "91496844"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn395_segs.zip",
+   "contentSize": "29399134"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn394_table.mat",
+   "contentSize": "181154051"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn394_raw_wav.zip",
+   "contentSize": "91255331756"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn397_specs.zip",
+   "contentSize": "28168578884"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/sil469_proj.zip",
+   "contentSize": "108207624"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/sil469_segs.zip",
+   "contentSize": "16832192"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn397_table.mat",
+   "contentSize": "108517831"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn397_raw_wav.zip",
+   "contentSize": "81196519656"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn394_hatchdate.mat",
+   "contentSize": "538"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/sil469_raw_wav.zip",
+   "contentSize": "10058229522"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/sil469_hatchdate.mat",
+   "contentSize": "538"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn475_specs.zip",
+   "contentSize": "8596062706"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn397_hatchdate.mat",
+   "contentSize": "538"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn475_segs.zip",
+   "contentSize": "12849857"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn475_hatchdate.mat",
+   "contentSize": "529"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn475_raw_wav.zip",
+   "contentSize": "8190968777"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/sil469_specs.zip",
+   "contentSize": "10475562885"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/sil469_table.mat",
+   "contentSize": "59503577"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/grn394_segs.zip",
+   "contentSize": "41399169"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/gauss_models.zip",
+   "contentSize": "17149802"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/gauss_models_64.zip",
+   "contentSize": "1492234"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/gauss_models_layers.zip",
+   "contentSize": "9397095"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/predicted_age_models.zip",
+   "contentSize": "2065375"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/predicted_age_models_fewerLayers.zip",
+   "contentSize": "5937007"
+  },
+  {
+   "@type": "DataDownload",
+   "contentUrl": "https://duke.tind.io/record/135/files/trained_vaes.zip",
+   "contentSize": "550779582"
+  }
+ ],
+ "@id": "https://duke.tind.io/record/135"
+}
