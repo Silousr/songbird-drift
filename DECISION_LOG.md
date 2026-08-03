@@ -330,3 +330,93 @@ when the alternative is a confound that mimics the signal.
 **Why:** a pure count threshold would silently delete genuinely rare *song* syllables
 along with the noise classes. Excluding by identity keeps the criterion about what the
 symbol means rather than how often it happens to occur.
+
+---
+
+## Phase 3 — Drift metric and noise floor (2026-08-03)
+
+### D3.1 — Bias-correct the centroid distance, and make the BOUT the sampling unit
+
+The squared distance between two sample means over-estimates the distance between the
+distribution means by `tr(Σa)/na + tr(Σb)/nb`. Subtracting those terms removes the bias —
+but the correction assumes the sampling unit is independent, and syllables are not: they
+arrive in bouts, and renditions within a bout are correlated.
+
+Measured on the clustered test fixture, with true drift of zero:
+
+| correction applied per… | mean estimate | fraction negative |
+|---|---|---|
+| rendition (clustered data) | **+1.41** | **0.00** |
+| bout (clustered data) | −0.00 | 0.50 |
+
+**Choice:** bouts are the unit for the variance correction, the bootstrap, and the null.
+
+**Why:** the first row is drift manufactured entirely from within-bout correlation, and
+because it never goes negative it would never look like noise. It would also have been
+worst on the quietest days, since the bias grows as samples shrink — and recording volume
+varies several-fold between days here (39 to 248 songs/day). That is a bias that
+correlates with an experimental variable, which is the most dangerous kind.
+
+**Consequence for Phase 4:** precision scales with the number of *bouts*, not syllables.
+More syllables inside the same bouts buys little. "Minutes of song" is the wrong unit for
+a power curve.
+
+### D3.2 — Never clip the drift estimate at zero
+
+The unbiased estimate is negative roughly half the time under the null.
+
+**Why:** clipping restores exactly the upward bias the correction removes, and converts a
+symmetric null into a one-sided pile-up at zero that no longer supports a calibrated test.
+Negative values are information — they say the observed separation is smaller than
+sampling noise alone would produce.
+
+### D3.3 — Fit the embedding space once, not per day
+
+PCA is fitted on a single reference day and applied to all days.
+
+**Why:** re-fitting per day moves the axes, and axis movement is indistinguishable from
+song movement. Verified empirically: refitting the space on each of the five days in turn
+changes drift estimates only in the third decimal, confirming the measurements are not an
+artefact of which day defines the space.
+
+### D3.4 — Exclude two nominally-baseline days as contaminated
+
+`gy6or6/2012-03-22` and `or60yw70/2012-10-01` each show 7.6–8.0× the drift of any other
+same-gap pair in their bird. Three competing explanations were tested and rejected:
+PCA reference day (ruled out by refitting on all five days), time-of-day confound (ruled
+out — restricting to a common window makes the anomaly *larger*), and a few noisy syllable
+types (ruled out — essentially every type moves together).
+
+**Choice:** exclude both from the noise floor, and report the exclusion prominently.
+
+**Why:** the dataset documents itself as *"baseline recordings for behavioral experiments
+that are not included in this dataset"*, and `gy6or6/032212` is the same directory Phase 1
+found to contain 10 files templated `washout` — a post-perturbation recovery phase. Keeping
+`gy6or6/032212` would have inflated that bird's apparent day-to-day drift roughly
+eightfold, which would then have been reported as the noise floor and made the tool look
+far less sensitive than it is.
+
+**The general lesson, recorded for the wet lab:** two of five days in a curated public
+"baseline" repository were unusable as baseline. Genuine baseline days must be
+demonstrably distant from any manipulation and recorded on a constant schedule — including
+time-of-day coverage, which differed sharply on both excluded days (2–3 h morning-only
+versus 10–14 h elsewhere).
+
+### D3.5 — Report drift standardised by within-type variance
+
+Drift is divided by the pooled within-type variance on the reference day.
+
+**Why:** raw squared PCA distance is in arbitrary units that depend on the spectrogram
+scaling and the number of components, so it is not comparable across birds or studies.
+Dividing by within-type variance gives a dimensionless effect size — centroid movement in
+units of natural rendition-to-rendition variation — which is what a power analysis needs
+and what another lab could compare against.
+
+### D3.6 — The 0.62 negative fraction is skew, not residual bias
+
+The null distribution has mean ≈ 0 but is negative ~62% of the time in all three birds.
+
+**Why this is expected:** the statistic is a difference of quadratic forms and is therefore
+right-skewed, so its median falls below its mean. Unbiasedness is a claim about the mean,
+and the means are −0.0002, +0.0075 and +0.0038. Recorded so the asymmetry is not later
+mistaken for a defect and "fixed" by someone re-introducing bias.

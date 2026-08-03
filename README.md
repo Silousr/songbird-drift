@@ -33,10 +33,21 @@ two birds, UMAP-8 only 0.662/0.450, and raising UMAP's dimensionality does not h
 **Drift will be measured in PCA space; UMAP is for visualisation only.** Silhouette score
 turned out to be anti-correlated with what matters here and is not used for selection.
 
-**Next: Phase 3 (drift metric + within-bird noise floor)**, carrying: measure in PCA
-(≥64 components); boundaries trustworthy only to ±5–10 ms; labeller instability ≈0.33%
-syllable error at 2-day separation; `gr41rd51` excluded from any unmanipulated set until
-its evTAF template is resolved with the authors.
+**Phase 3 (drift metric + noise floor) complete.** See [PHASE3_REPORT.md](PHASE3_REPORT.md).
+Across three birds, day-to-day drift at 1-day separation (**0.013** standardised) sits well
+below the within-day noise floor (**0.041**), with 0 of 26 syllable types exceeding it.
+Drift grows ~0.012/day and crosses the floor at **≈3 days** — so that is where the usable
+signal window opens.
+
+Two corrections were needed first, each of which would otherwise have produced a
+confidently wrong answer: the naive centroid distance manufactures drift out of within-bout
+correlation (~10× under-correction, never negative, worst on the quietest days), so the
+**bout** is the sampling unit throughout; and two nominally-"baseline" days turned out to
+be contaminated by adjacent experimental phases and had to be excluded.
+
+**Next: Phase 4 (sensitivity analysis)** — minimum detectable drift versus recording
+volume. Note the unit: precision scales with the number of **bouts**, not syllables or
+minutes.
 
 ## Planned scope
 

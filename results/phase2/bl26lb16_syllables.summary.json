@@ -1,0 +1,46 @@
+{
+ "bird": "bl26lb16",
+ "n_syllables": 6000,
+ "n_days": 3,
+ "days": [
+  "2012-04-19",
+  "2012-04-20",
+  "2012-04-21"
+ ],
+ "spectrogram_shape": [
+  32,
+  100
+ ],
+ "labels": {
+  "a": 445,
+  "b": 2520,
+  "c": 304,
+  "d": 137,
+  "e": 1533,
+  "f": 278,
+  "i": 783
+ },
+ "dropped_offschema_or_rare_syllables": 1204,
+ "excluded_labels": [
+  "0",
+  "@",
+  "s",
+  "u",
+  "w",
+  "x",
+  "y",
+  "z"
+ ],
+ "skipped_date_mismatch_files": 0,
+ "spec_params": {
+  "n_fft": 512,
+  "hop_length": 64,
+  "freq_range_hz": [
+   500,
+   10000
+  ],
+  "max_duration_s": 0.2,
+  "n_freq_bins": 32,
+  "dynamic_range_db": 60.0
+ }
+}
