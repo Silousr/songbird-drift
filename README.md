@@ -67,6 +67,17 @@ or longer separations.
 4. **Sensitivity analysis** — MDE vs bouts and syllable count; saturation at ~80 bouts.
    [PHASE4_REPORT.md](PHASE4_REPORT.md)
 
+### Validation
+
+Recovered a known effect from public data — developmental convergence in a juvenile zebra
+finch ([VALIDATION_REPORT.md](VALIDATION_REPORT.md)): song is **2× closer to the adult
+endpoint** late in development than early, with non-overlapping confidence intervals.
+
+But the **consecutive-day framing failed** the same test (ratio 1.0×), and the diagnosis is
+a design lesson: **compare every timepoint against a pooled baseline, not against the
+preceding timepoint.** A consecutive comparison sees one interval's change buried in noise;
+a fixed reference accumulates change while the noise does not.
+
 ### Known gap
 
 The drift metric measures a **centroid shift**. A manipulation that increased

@@ -487,3 +487,60 @@ without moving the mean would be invisible to this statistic — and increased v
 a plausible signature of a reopened critical period, arguably more plausible than a clean
 directional shift. Recorded as the most valuable extension rather than left for someone to
 discover after running the experiment.
+
+---
+
+## Validation — Recovering a known effect (2026-08-03)
+
+### V1 — Report the negative result, and diagnose it rather than reframing until it passes
+
+Consecutive-day drift does **not** distinguish learning from crystallised song in `grn394`
+(median 0.0072 vs 0.0073, ratio 1.0x). Two candidate explanations were tested and rejected
+before accepting the negative: restricting to song-like sounds via endpoint clustering gave
+0.0135 vs 0.0187 (ratio 0.72x, still the wrong direction), and total within-day variance was
+flat (ratio 0.95x), so the effect is not hiding in dispersion either.
+
+**Why this is recorded prominently:** it would have been easy to run only the test that
+worked (distance to a fixed reference) and report a clean success. The negative is the more
+useful half — it shows the consecutive-day framing is underpowered for real developmental
+change, which is a property of the *design*, not of this dataset, and which would otherwise
+have surfaced only after a wet-lab experiment had been run.
+
+### V2 — Compare each timepoint to a pooled baseline, not to the preceding timepoint
+
+Distance to a fixed crystallised reference recovers the effect: 2.0x closer to adult song
+late versus early, with non-overlapping confidence intervals and a significant slope
+(-0.00111/day, p=1.5e-3).
+
+**Why:** a consecutive comparison sees one interval's change buried in noise; a fixed
+reference accumulates all change since baseline while the noise does not grow with it.
+This is consistent with Phase 3, where 1-day drift sat below the noise floor and only
+cleared it at ~3 days.
+
+**Carried into the experimental design recommendation:** compare every timepoint against a
+pooled baseline. On this data it is the difference between detecting the known effect and
+missing it entirely.
+
+### V3 — Use blocks of consecutive batch files as the clustering unit, not reconstructed bouts
+
+Duke's latents are batched 20-per-file and the batch-to-bout mapping cannot be recovered
+exactly: AVA writes only complete batches (so most days are truncated to a multiple of 20)
+and two days have further gaps beyond that.
+
+**Choice:** cluster by blocks of 10 consecutive batch files rather than attempting to
+reconstruct bouts.
+
+**Why:** a block is *coarser* than a bout, so it can only widen confidence intervals — the
+safe direction. A reconstructed mapping that was subtly wrong would corrupt precisely the
+clustering structure the estimator depends on, which is the failure mode D3.1 exists to
+prevent. Better a conservative unit than a clever one that might be wrong.
+
+### V4 — State that this validates the statistic, not the toolkit's own embedding
+
+The analysis uses the original authors' VAE latents.
+
+**Why it still counts:** the drift statistic — bias correction, bout clustering, bootstrap
+intervals — is what Phases 3 and 4 built and what a wet lab would rely on, and it is
+exercised end-to-end here against an independently documented effect. But validating our
+own audio-to-embedding path would need the raw audio (291 GB against 30 GB free), so the
+claim is deliberately limited. Phases 1-2 establish that path separately on Bengalese finch.
