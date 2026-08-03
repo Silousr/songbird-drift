@@ -24,6 +24,9 @@ from __future__ import annotations
 import numpy as np
 
 __all__ = [
+    "DEFAULT_FOLD_CHANGE_GRID",
+    "dispersion_detection_power",
+    "minimum_detectable_fold_change",
     "DEFAULT_EFFECT_GRID",
     "critical_value",
     "detection_power",
@@ -161,4 +164,114 @@ def minimum_detectable_effect(
         )
         if achieved >= power:
             return float(effect)
+    return float("nan")
+
+
+#: Fold-changes in rendition variance spanning tightening and loosening.
+DEFAULT_FOLD_CHANGE_GRID = np.array([
+    1.05, 1.1, 1.15, 1.2, 1.3, 1.4, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0,
+])
+
+
+def _scale_dispersion(points: np.ndarray, fold_change: float) -> np.ndarray:
+    """Scale deviations from the mean so variance changes by ``fold_change`` exactly.
+
+    The centroid is left untouched, which is the point: this injects the kind of change
+    the centroid metric is structurally blind to.
+    """
+    centre = points.mean(axis=0)
+    return centre + (points - centre) * np.sqrt(fold_change)
+
+
+def _dispersion_draws(
+    points: np.ndarray,
+    groups: np.ndarray,
+    n_bouts: int,
+    fold_change: float,
+    n_draws: int,
+    seed: int,
+) -> np.ndarray:
+    from songbird.drift import log_variance_ratio
+
+    points = np.asarray(points, dtype=float)
+    groups = np.asarray(groups)
+    if len(points) != len(groups):
+        raise ValueError(
+            f"group labels must match sample length: {len(points)} vs {len(groups)}"
+        )
+
+    by_bout = _bout_index(groups)
+    keys = np.array(list(by_bout))
+    if n_bouts < 2:
+        raise ValueError(f"need at least 2 bouts per side; got {n_bouts}")
+    if 2 * n_bouts > len(keys):
+        raise ValueError(
+            f"need {2 * n_bouts} bouts to form two disjoint halves of {n_bouts}; "
+            f"only {len(keys)} available"
+        )
+
+    rng = np.random.default_rng(seed)
+    values = []
+    for _ in range(n_draws):
+        chosen = rng.choice(keys, size=2 * n_bouts, replace=False)
+        left = np.concatenate([by_bout[k] for k in chosen[:n_bouts]])
+        right = np.concatenate([by_bout[k] for k in chosen[n_bouts:]])
+        if len(left) < 2 or len(right) < 2:
+            continue
+        try:
+            values.append(
+                log_variance_ratio(points[left], _scale_dispersion(points[right],
+                                                                   fold_change))
+            )
+        except ValueError:
+            continue
+    return np.asarray(values)
+
+
+def dispersion_detection_power(
+    points: np.ndarray,
+    groups: np.ndarray,
+    n_bouts: int,
+    fold_change: float,
+    alpha: float = 0.05,
+    n_draws: int = 500,
+    seed: int = 0,
+) -> float:
+    """Probability of detecting a ``fold_change`` in rendition variance.
+
+    Two-sided: a manipulation could tighten renditions as easily as loosen them, so the
+    threshold is a quantile of ``|log ratio|`` under no change.
+    """
+    null = _dispersion_draws(points, groups, n_bouts, 1.0, n_draws, seed + 10_007)
+    if len(null) == 0:
+        raise ValueError("no valid null draws")
+    threshold = float(np.percentile(np.abs(null), 100 * (1 - alpha)))
+
+    alternative = _dispersion_draws(points, groups, n_bouts, fold_change, n_draws, seed)
+    if len(alternative) == 0:
+        raise ValueError("no valid alternative draws")
+    return float(np.mean(np.abs(alternative) > threshold))
+
+
+def minimum_detectable_fold_change(
+    points: np.ndarray,
+    groups: np.ndarray,
+    n_bouts: int,
+    alpha: float = 0.05,
+    power: float = 0.8,
+    grid: np.ndarray = DEFAULT_FOLD_CHANGE_GRID,
+    n_draws: int = 500,
+    seed: int = 0,
+) -> float:
+    """Smallest fold-change in variance on ``grid`` reaching ``power``.
+
+    Returns ``nan`` when nothing on the grid reaches it, rather than the grid maximum --
+    which would understate what the experiment needs.
+    """
+    for fold in np.sort(np.asarray(grid, dtype=float)):
+        achieved = dispersion_detection_power(
+            points, groups, n_bouts, float(fold), alpha, n_draws, seed
+        )
+        if achieved >= power:
+            return float(fold)
     return float("nan")

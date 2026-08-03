@@ -107,13 +107,35 @@ Report both metrics side by side, each against its own noise floor:
 A manipulation may move either, both, or neither, and "neither" is only interpretable when
 both were measured.
 
+## Sensitivity: how many bouts to detect a change in variability
+
+Injected by scaling each half's deviations from its own mean — variance changes by exactly
+the requested factor, the centroid does not move at all. Median across syllable types,
+80% power, two-sided at α = 0.05.
+
+| Bouts / timepoint | `gy6or6` | `or60yw70` | `bl26lb16` |
+|---|---|---|---|
+| 5 | 2.75× | 2.50× | 3.25× |
+| 10 | 2.00× | 1.88× | 2.75× |
+| 20 | 1.50× | 1.50× | 2.25× |
+| 40 | 1.40× | 1.35× | 1.62× |
+| 80 | **1.30×** | **1.30×** | 1.45× |
+
+At the ~80 bouts/timepoint recommended by Phase 4, a **1.3× change in rendition variance**
+is detectable — which sits right at the measured dispersion noise floor (1.24–1.27×). The
+same saturation logic applies: sensitivity has been pushed down to the level of the bird's
+own variability, and further recording cannot convert into a stronger claim.
+
+Dispersion is the **less sensitive** of the two metrics at equal volume. Detecting a 1.3×
+variance change needs the same 80 bouts that buys a 0.02 standardised centroid shift —
+comfortably below that metric's 0.041 floor. An experiment powered for centroid drift is
+*not* automatically powered for dispersion, so the dispersion curve should be the one used
+when planning, since it is the binding constraint.
+
 ## Limitations
 
 - **Adult floors come from three birds over 3–4 clean days each**, with a maximum
   separation of 3 days. Same constraint as Phase 3.
-- **No sensitivity curves yet.** Phase 4's minimum-detectable-effect analysis has not been
-  repeated for dispersion, so there is no answer yet to "how many bouts to detect a 1.2×
-  variance change". That is the obvious next step.
 - **The developmental validation uses the authors' VAE latents**, not this toolkit's
   embedding, and clusters rather than hand labels — the same scope limits as the earlier
   validation.
