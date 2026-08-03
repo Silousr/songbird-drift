@@ -1,0 +1,222 @@
+"""Ingestion for the Bengalese Finch Song Repository (figshare 10.6084/m9.figshare.4805749).
+
+Layout is ``{bird}/{MMDDYY}/{bird}[_{template}]_{DDMMYY}_{HHMM}.{serial}.wav`` with a
+sibling ``.wav.csv`` holding ``onset_s,offset_s,label`` per syllable.
+
+The directory date is **MMDDYY** and the filename date is **DDMMYY** -- reversed. They
+encode the same day. :func:`parse_recording_filename` accepts the directory name so the
+two can be cross-checked; a disagreement raises rather than being silently accepted,
+because a corrupted time axis leaves every downstream number plausible but wrong.
+"""
+
+from __future__ import annotations
+
+import csv
+import datetime as dt
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+import pandas as pd
+
+__all__ = [
+    "DateMismatchError",
+    "Recording",
+    "Syllable",
+    "SYLLABLE_COLUMNS",
+    "load_dataset",
+    "load_day",
+    "parse_day_dir",
+    "parse_recording_filename",
+    "read_annotation_csv",
+]
+
+SYLLABLE_COLUMNS = (
+    "bird",
+    "day",
+    "timestamp",
+    "audio_file",
+    "onset_s",
+    "offset_s",
+    "duration_s",
+    "label",
+    "source",
+)
+
+# Matches the invariant tail: DDMMYY_HHMM.serial.wav
+_TAIL = re.compile(r"(?P<date>\d{6})_(?P<time>\d{4})\.(?P<serial>\d+)\.wav$")
+
+
+class DateMismatchError(ValueError):
+    """Directory date and filename date disagree about the recording day."""
+
+
+@dataclass(frozen=True)
+class Recording:
+    """One recorded song file."""
+
+    bird: str
+    timestamp: dt.datetime
+    serial: int
+    template: str | None = None
+
+    @property
+    def day(self) -> dt.date:
+        return self.timestamp.date()
+
+
+@dataclass(frozen=True)
+class Syllable:
+    """One annotated syllable, with times relative to the start of its audio file."""
+
+    onset_s: float
+    offset_s: float
+    label: str
+
+    @property
+    def duration_s(self) -> float:
+        return self.offset_s - self.onset_s
+
+
+def parse_day_dir(name: str) -> dt.date:
+    """Parse an ``MMDDYY`` directory name into a date."""
+    if not re.fullmatch(r"\d{6}", name):
+        raise ValueError(f"not an MMDDYY directory name: {name!r}")
+    month, day, year = int(name[:2]), int(name[2:4]), int(name[4:])
+    try:
+        return dt.date(2000 + year, month, day)
+    except ValueError as exc:
+        raise ValueError(f"invalid MMDDYY directory name {name!r}: {exc}") from exc
+
+
+def parse_recording_filename(name: str, day_dir: str | None = None) -> Recording:
+    """Parse a recording filename into a :class:`Recording`.
+
+    Accepts either ``....wav`` or ``....wav.csv``. If ``day_dir`` is given, the
+    filename's DDMMYY date is cross-checked against the directory's MMDDYY date.
+    """
+    stem = name[: -len(".csv")] if name.endswith(".csv") else name
+
+    tail = _TAIL.search(stem)
+    if tail is None or "_" not in stem:
+        raise ValueError(f"unparseable recording filename: {name!r}")
+
+    bird, rest = stem.split("_", 1)
+    if not bird:
+        raise ValueError(f"unparseable recording filename: {name!r}")
+
+    prefix = rest[: tail.start() - len(bird) - 1]
+    template = prefix.rstrip("_") or None
+
+    date_field, time_field = tail["date"], tail["time"]
+    day, month, year = int(date_field[:2]), int(date_field[2:4]), int(date_field[4:])
+    hour, minute = int(time_field[:2]), int(time_field[2:])
+    try:
+        timestamp = dt.datetime(2000 + year, month, day, hour, minute)
+    except ValueError as exc:
+        raise ValueError(f"invalid date/time in filename {name!r}: {exc}") from exc
+
+    if day_dir is not None:
+        expected = parse_day_dir(day_dir)
+        if timestamp.date() != expected:
+            raise DateMismatchError(
+                f"{name!r} carries date {timestamp.date()} but sits in directory "
+                f"{day_dir!r} meaning {expected}. Refusing to guess which is right."
+            )
+
+    return Recording(
+        bird=bird, timestamp=timestamp, serial=int(tail["serial"]), template=template
+    )
+
+
+def read_annotation_csv(path: str | Path) -> list[Syllable]:
+    """Read a ``.wav.csv`` annotation into a list of :class:`Syllable`."""
+    syllables: list[Syllable] = []
+    with open(path, newline="") as handle:
+        for row_number, row in enumerate(csv.DictReader(handle), start=2):
+            onset, offset = float(row["onset_s"]), float(row["offset_s"])
+            if offset <= onset:
+                raise ValueError(
+                    f"{path}:{row_number}: offset {offset} does not follow onset {onset}"
+                )
+            syllables.append(
+                Syllable(onset_s=onset, offset_s=offset, label=str(row["label"]))
+            )
+    return syllables
+
+
+def _empty_table() -> pd.DataFrame:
+    return pd.DataFrame({column: pd.Series(dtype=object) for column in SYLLABLE_COLUMNS})
+
+
+def _finalise(rows: list[dict], coverage: dict[str, int]) -> pd.DataFrame:
+    table = pd.DataFrame(rows, columns=list(SYLLABLE_COLUMNS)) if rows else _empty_table()
+    if rows:
+        # Keep `day` as datetime.date rather than letting pandas coerce to datetime64,
+        # so day identity stays exact and comparable to plain dates.
+        table["day"] = pd.Series([row["day"] for row in rows], dtype=object)
+        table = table.sort_values(["timestamp", "onset_s"], kind="stable").reset_index(
+            drop=True
+        )
+    table.attrs.update(coverage)
+    return table
+
+
+def load_day(day_dir: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
+    """Load one ``{bird}/{MMDDYY}/`` directory into a canonical syllable table.
+
+    Unannotated audio is counted in ``table.attrs`` rather than silently dropped --
+    annotation coverage in this dataset is partial and uneven, and a day that is half
+    annotated must not look like a day that is fully annotated.
+    """
+    day_dir = Path(day_dir)
+    bird = day_dir.parent.name
+
+    audio_files = sorted(p for p in day_dir.glob("*.wav") if not p.name.endswith(".csv"))
+    annotations = sorted(day_dir.glob("*.wav.csv"))
+
+    rows: list[dict] = []
+    for annotation_path in annotations:
+        recording = parse_recording_filename(annotation_path.name, day_dir=day_dir.name)
+        for syllable in read_annotation_csv(annotation_path):
+            rows.append(
+                {
+                    "bird": recording.bird or bird,
+                    "day": recording.day,
+                    "timestamp": recording.timestamp,
+                    "audio_file": annotation_path.name[: -len(".csv")],
+                    "onset_s": syllable.onset_s,
+                    "offset_s": syllable.offset_s,
+                    "duration_s": syllable.duration_s,
+                    "label": syllable.label,
+                    "source": source,
+                }
+            )
+
+    coverage = {
+        "n_audio_files": len(audio_files),
+        "n_annotated_files": len(annotations),
+        "n_unannotated_files": max(len(audio_files) - len(annotations), 0),
+    }
+    return _finalise(rows, coverage)
+
+
+def load_dataset(root: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
+    """Load an entire ``{bird}/{MMDDYY}/`` tree into one canonical syllable table."""
+    root = Path(root)
+    day_dirs = sorted(
+        p for p in root.glob("*/*") if p.is_dir() and re.fullmatch(r"\d{6}", p.name)
+    )
+    if not day_dirs:
+        raise FileNotFoundError(f"no {{bird}}/{{MMDDYY}} day directories under {root}")
+
+    tables = [load_day(day_dir, source=source) for day_dir in day_dirs]
+    combined = pd.concat(tables, ignore_index=True) if tables else _empty_table()
+    combined = combined.sort_values(["bird", "timestamp", "onset_s"], kind="stable")
+    combined = combined.reset_index(drop=True)
+
+    for key in ("n_audio_files", "n_annotated_files", "n_unannotated_files"):
+        combined.attrs[key] = sum(table.attrs[key] for table in tables)
+    combined.attrs["n_days"] = len(day_dirs)
+    return combined
+

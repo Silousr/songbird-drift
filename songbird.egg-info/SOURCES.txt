@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+songbird/__init__.py
+songbird.egg-info/PKG-INFO
+songbird.egg-info/SOURCES.txt
+songbird.egg-info/dependency_links.txt
+songbird.egg-info/requires.txt
+songbird.egg-info/top_level.txt
+songbird/ingest/__init__.py
+songbird/ingest/bfsongrepo.py
+tests/test_bfsongrepo.py

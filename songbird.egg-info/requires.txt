@@ -1,0 +1,16 @@
+numpy
+pandas
+scipy
+scikit-learn
+librosa
+soundfile
+h5py
+crowsetta
+praat-parselmouth
+matplotlib
+
+[dev]
+pytest
+
+[segment]
+vak>=1.1.0

@@ -1,0 +1,31 @@
+[project]
+name = "songbird"
+version = "0.1.0"
+description = "Within-bird song drift measurement with a calibrated noise floor"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "librosa",
+    "soundfile",
+    "h5py",
+    "crowsetta",
+    "praat-parselmouth",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+segment = ["vak>=1.1.0"]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["songbird*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

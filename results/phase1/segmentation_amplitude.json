@@ -1,0 +1,106 @@
+{
+ "segmenter": {
+  "threshold": 0.01,
+  "min_syllable_s": 0.02,
+  "min_silence_s": 0.005,
+  "smooth_ms": 2.0
+ },
+ "tolerance_s": 0.01,
+ "files_per_day": 25,
+ "days": [
+  {
+   "day": "032312",
+   "bird": "gy6or6",
+   "n_files": 25,
+   "n_true": 1608,
+   "n_pred": 1603,
+   "n_matched": 1563,
+   "precision": 0.975,
+   "recall": 0.972,
+   "f1": 0.9735
+  },
+  {
+   "day": "032512",
+   "bird": "gy6or6",
+   "n_files": 25,
+   "n_true": 1427,
+   "n_pred": 1426,
+   "n_matched": 1366,
+   "precision": 0.9579,
+   "recall": 0.9573,
+   "f1": 0.9576
+  },
+  {
+   "day": "032612",
+   "bird": "gy6or6",
+   "n_files": 25,
+   "n_true": 1700,
+   "n_pred": 1690,
+   "n_matched": 1616,
+   "precision": 0.9562,
+   "recall": 0.9506,
+   "f1": 0.9534
+  },
+  {
+   "day": "092712",
+   "bird": "or60yw70",
+   "n_files": 25,
+   "n_true": 2286,
+   "n_pred": 2281,
+   "n_matched": 2271,
+   "precision": 0.9956,
+   "recall": 0.9934,
+   "f1": 0.9945
+  },
+  {
+   "day": "092812",
+   "bird": "or60yw70",
+   "n_files": 25,
+   "n_true": 1905,
+   "n_pred": 1887,
+   "n_matched": 1883,
+   "precision": 0.9979,
+   "recall": 0.9885,
+   "f1": 0.9931
+  },
+  {
+   "day": "092912",
+   "bird": "or60yw70",
+   "n_files": 25,
+   "n_true": 1997,
+   "n_pred": 1998,
+   "n_matched": 1982,
+   "precision": 0.992,
+   "recall": 0.9925,
+   "f1": 0.9922
+  },
+  {
+   "day": "093012",
+   "bird": "or60yw70",
+   "n_files": 25,
+   "n_true": 2018,
+   "n_pred": 2015,
+   "n_matched": 2009,
+   "precision": 0.997,
+   "recall": 0.9955,
+   "f1": 0.9963
+  },
+  {
+   "day": "100112",
+   "bird": "or60yw70",
+   "n_files": 25,
+   "n_true": 1740,
+   "n_pred": 1709,
+   "n_matched": 1626,
+   "precision": 0.9514,
+   "recall": 0.9345,
+   "f1": 0.9429
+  }
+ ],
+ "pooled": {
+  "f1": 0.9775,
+  "precision": 0.9799,
+  "recall": 0.9751,
+  "n_true": 14681
+ }
+}

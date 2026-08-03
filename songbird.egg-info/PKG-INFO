@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: songbird
+Version: 0.1.0
+Summary: Within-bird song drift measurement with a calibrated noise floor
+Requires-Python: >=3.12
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: scikit-learn
+Requires-Dist: librosa
+Requires-Dist: soundfile
+Requires-Dist: h5py
+Requires-Dist: crowsetta
+Requires-Dist: praat-parselmouth
+Requires-Dist: matplotlib
+Provides-Extra: segment
+Requires-Dist: vak>=1.1.0; extra == "segment"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
