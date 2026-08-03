@@ -11,16 +11,22 @@ and probabilistic syntax. Not language.
 
 **Phase 0 (data audit) complete — verdict GO.** See [PHASE0_DATA_AUDIT.md](PHASE0_DATA_AUDIT.md).
 
-**Phase 1 (ingestion + segmentation) in progress.** All 18 Bengalese finch bird-days
-(4 birds, 5.5 GB) ingested. Amplitude segmentation reaches **F1 = 0.969** against the hand
-annotations on 14 held-out bird-days (22,324 syllables), with the threshold fitted per bird
-on a separate day. TweetyNet label recovery is running; that is the non-circular half of the
-gate and the phase is not complete until it reports.
+**Phase 1 (ingestion + segmentation) complete — gate PASSED.** See
+[PHASE1_REPORT.md](PHASE1_REPORT.md). All 18 Bengalese finch bird-days (4 birds, 5.5 GB)
+ingested. Amplitude segmentation reaches **F1 = 0.969** against the hand annotations on 14
+held-out bird-days (22,324 syllables) with the threshold fitted per bird on a separate day;
+TweetyNet recovers hand *labels* at **98.9% frame accuracy / 0.33% syllable error** on a
+held-out day two days after training.
 
 Two defects in the published dataset were caught by the loader's guardrails and are
 documented in [DECISION_LOG.md](DECISION_LOG.md): a signed 16-bit filename counter that
 wraps negative in `bl26lb16/042012`, and 10 files in `gy6or6/032212` that are dated nine
 days earlier and belong to a different experimental phase (`washout`).
+
+**Next: Phase 2 (embedding + fidelity gate)**, carrying three constraints from Phase 1 —
+syllable boundaries are trustworthy only to ±5–10 ms, labeller instability contributes
+≈0.33% syllable error at 2-day separation, and `gr41rd51` is excluded from any
+unmanipulated set until its evTAF template is resolved with the authors.
 
 ## Planned scope
 
