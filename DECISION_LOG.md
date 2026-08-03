@@ -420,3 +420,70 @@ The null distribution has mean ≈ 0 but is negative ~62% of the time in all thr
 right-skewed, so its median falls below its mean. Unbiasedness is a claim about the mean,
 and the means are −0.0002, +0.0075 and +0.0038. Recorded so the asymmetry is not later
 mistaken for a defect and "fixed" by someone re-introducing bias.
+
+---
+
+## Phase 4 — Sensitivity analysis (2026-08-03)
+
+### D4.1 — Estimate power by injection into real data, not from a formula
+
+Each draw samples real bouts, splits them in half, displaces one half by a known
+standardised amount, and tests whether the statistic clears its critical value.
+
+**Why:** a parametric power formula assumes independent syllables. Phase 3 measured a ~10x
+design effect from within-bout correlation, so a formula-based calculation would promise an
+experiment far more sensitive than it can be — the worst possible direction for a tool
+whose purpose is planning.
+
+Threshold and power use independent draws, so the critical value is never tuned to the
+draws it is applied to.
+
+### D4.2 — Evaluate effect sizes in closed form rather than re-simulating
+
+The injected shift enters the statistic analytically: `stat(s) = baseline − 2·s·d + ||s||²`.
+Storing `baseline` and the projection `s·d` per draw lets the whole effect grid be
+evaluated exactly from one simulation.
+
+**Why:** re-simulating each grid point was too slow to sweep bouts × types × subsets, and
+it added Monte-Carlo noise between grid points that showed up as a non-monotonic MDE curve.
+The closed form is exact, not an approximation, and removed the artefact.
+
+### D4.3 — Average over random subsets of syllable types when varying K
+
+For K < all, MDE is the median over 9 random type subsets rather than the first K
+alphabetically.
+
+**Why:** syllable types differ in variance and in how many bouts contain them, so a fixed
+subset makes the K columns incomparable — the first version produced a K=3 column *worse*
+than K=1, which was an artefact of which types happened to be chosen.
+
+### D4.4 — Report recording volume in bouts, with minutes only as a conversion
+
+**Why:** the estimator's sampling unit is the bout, so precision tracks bout count.
+"Minutes of song" is what a lab naturally plans in, but two protocols with equal minutes
+and different bout counts have very different power. Minutes are derived from each bird's
+measured median annotated song per bout (4.4–8.9 s), computed on the **full** annotations —
+deriving it from the 2,000/day analysis subsample understated song time several-fold, since
+the subsample keeps every bout but only a fraction of each bout's syllables.
+
+### D4.5 — Report the saturation point, not just the curve
+
+Beyond ~80 bouts per timepoint, measurement precision (MDE 0.020) is finer than the bird's
+own unmanipulated day-to-day drift (0.013–0.035).
+
+**Why this belongs in the deliverable:** the naive reading of a sensitivity curve is "more
+data is always better", which would send a lab into long recording sessions that cannot
+strengthen any claim. Past saturation, additional power has to come from more birds or
+longer separations. Stating where the curve stops paying is more useful than the curve
+alone.
+
+### D4.6 — State plainly what the metric cannot see
+
+The injected effect is a rigid displacement of the distribution. The curves therefore
+describe sensitivity to a **centroid shift** only.
+
+**Why it matters:** a manipulation that increased rendition-to-rendition *variability*
+without moving the mean would be invisible to this statistic — and increased variability is
+a plausible signature of a reopened critical period, arguably more plausible than a clean
+directional shift. Recorded as the most valuable extension rather than left for someone to
+discover after running the experiment.

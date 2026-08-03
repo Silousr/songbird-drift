@@ -45,18 +45,34 @@ correlation (~10× under-correction, never negative, worst on the quietest days)
 **bout** is the sampling unit throughout; and two nominally-"baseline" days turned out to
 be contaminated by adjacent experimental phases and had to be excluded.
 
-**Next: Phase 4 (sensitivity analysis)** — minimum detectable drift versus recording
-volume. Note the unit: precision scales with the number of **bouts**, not syllables or
-minutes.
+**Phase 4 (sensitivity analysis) complete.** See [PHASE4_REPORT.md](PHASE4_REPORT.md).
+Minimum detectable drift falls roughly as 1/N with the number of bouts per timepoint:
+0.50 at 5 bouts, 0.075 at 20, **0.020 at 80 (~8 min of song)**, 0.010 at 160. Aggregating
+across the whole syllable repertoire buys a further factor of ~1.5–2 over a single type.
 
-## Planned scope
+**All four phases are complete.** The headline planning result: record **~80 bouts
+(~8 min of song) per timepoint**. Below that sensitivity is lost quickly; above it,
+measurement precision is already finer than the bird's own unmanipulated day-to-day drift,
+so extra recording cannot strengthen a claim — additional power has to come from more birds
+or longer separations.
 
-1. **Ingestion + segmentation** on real data, recovering existing hand labels (`vak` + TweetyNet).
-2. **Embedding + fidelity gate.** An embedding must separate syllable types and recover
-   human labels at high accuracy before any distance computed in it is trusted.
-3. **Drift metric + within-bird noise floor.** Day-to-day variation with nothing
-   manipulated. The load-bearing statistic.
-4. **Sensitivity analysis.** Minimum detectable drift vs recording volume vs syllable count.
+## Scope (all phases complete)
+
+1. **Ingestion + segmentation** — `vak` + TweetyNet. Segmentation F1 0.969, label recovery
+   98.9% frame accuracy. [PHASE1_REPORT.md](PHASE1_REPORT.md)
+2. **Embedding + fidelity gate** — PCA passes (within-type ρ = 0.996), UMAP fails (0.45–0.66).
+   [PHASE2_REPORT.md](PHASE2_REPORT.md)
+3. **Drift metric + noise floor** — 1-day drift 0.013 vs floor 0.041; signal window opens at
+   ~3 days. [PHASE3_REPORT.md](PHASE3_REPORT.md)
+4. **Sensitivity analysis** — MDE vs bouts and syllable count; saturation at ~80 bouts.
+   [PHASE4_REPORT.md](PHASE4_REPORT.md)
+
+### Known gap
+
+The drift metric measures a **centroid shift**. A manipulation that increased
+rendition-to-rendition *variability* without moving the mean would be invisible to it — and
+that is a plausible signature of a reopened critical period. A dispersion-drift metric is
+the most valuable next addition.
 
 Statistical guardrails: within-bird longitudinal only; every drift number carries an
 uncertainty estimate; the null is established before any signal is claimed; power is

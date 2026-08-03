@@ -1,0 +1,172 @@
+{
+ "data": "results/phase2/bl26lb16_syllables.npz",
+ "excluded_days": [],
+ "reference_day": "2012-04-19",
+ "n_pca": 64,
+ "scale_within_type_variance": 16.40762,
+ "median_song_seconds_per_bout": 8.942,
+ "n_bouts_available": 438,
+ "alpha": 0.05,
+ "power": 0.8,
+ "effect_grid": [
+  0.005,
+  0.01,
+  0.02,
+  0.03,
+  0.05,
+  0.075,
+  0.1,
+  0.15,
+  0.2,
+  0.3,
+  0.5,
+  0.75,
+  1.0
+ ],
+ "cells": [
+  {
+   "n_bouts": 5,
+   "n_types": 1,
+   "mde": 0.5,
+   "song_minutes": 0.7451250000000026
+  },
+  {
+   "n_bouts": 5,
+   "n_types": 3,
+   "mde": 0.625,
+   "song_minutes": 0.7451250000000026
+  },
+  {
+   "n_bouts": 5,
+   "n_types": 5,
+   "mde": 0.75,
+   "song_minutes": 0.7451250000000026
+  },
+  {
+   "n_bouts": 5,
+   "n_types": 7,
+   "mde": 0.5,
+   "song_minutes": 0.7451250000000026
+  },
+  {
+   "n_bouts": 10,
+   "n_types": 1,
+   "mde": 0.75,
+   "song_minutes": 1.4902500000000052
+  },
+  {
+   "n_bouts": 10,
+   "n_types": 3,
+   "mde": 0.5,
+   "song_minutes": 1.4902500000000052
+  },
+  {
+   "n_bouts": 10,
+   "n_types": 5,
+   "mde": 0.3,
+   "song_minutes": 1.4902500000000052
+  },
+  {
+   "n_bouts": 10,
+   "n_types": 7,
+   "mde": 0.3,
+   "song_minutes": 1.4902500000000052
+  },
+  {
+   "n_bouts": 20,
+   "n_types": 1,
+   "mde": 0.5,
+   "song_minutes": 2.9805000000000104
+  },
+  {
+   "n_bouts": 20,
+   "n_types": 3,
+   "mde": 0.2,
+   "song_minutes": 2.9805000000000104
+  },
+  {
+   "n_bouts": 20,
+   "n_types": 5,
+   "mde": 0.2,
+   "song_minutes": 2.9805000000000104
+  },
+  {
+   "n_bouts": 20,
+   "n_types": 7,
+   "mde": 0.15,
+   "song_minutes": 2.9805000000000104
+  },
+  {
+   "n_bouts": 40,
+   "n_types": 1,
+   "mde": 0.03,
+   "song_minutes": 5.961000000000021
+  },
+  {
+   "n_bouts": 40,
+   "n_types": 3,
+   "mde": 0.1,
+   "song_minutes": 5.961000000000021
+  },
+  {
+   "n_bouts": 40,
+   "n_types": 5,
+   "mde": 0.075,
+   "song_minutes": 5.961000000000021
+  },
+  {
+   "n_bouts": 40,
+   "n_types": 7,
+   "mde": 0.075,
+   "song_minutes": 5.961000000000021
+  },
+  {
+   "n_bouts": 80,
+   "n_types": 1,
+   "mde": 0.075,
+   "song_minutes": 11.922000000000041
+  },
+  {
+   "n_bouts": 80,
+   "n_types": 3,
+   "mde": 0.05,
+   "song_minutes": 11.922000000000041
+  },
+  {
+   "n_bouts": 80,
+   "n_types": 5,
+   "mde": 0.03,
+   "song_minutes": 11.922000000000041
+  },
+  {
+   "n_bouts": 80,
+   "n_types": 7,
+   "mde": 0.03,
+   "song_minutes": 11.922000000000041
+  },
+  {
+   "n_bouts": 160,
+   "n_types": 1,
+   "mde": 0.02,
+   "song_minutes": 23.844000000000083
+  },
+  {
+   "n_bouts": 160,
+   "n_types": 3,
+   "mde": 0.03,
+   "song_minutes": 23.844000000000083
+  },
+  {
+   "n_bouts": 160,
+   "n_types": 5,
+   "mde": 0.02,
+   "song_minutes": 23.844000000000083
+  },
+  {
+   "n_bouts": 160,
+   "n_types": 7,
+   "mde": 0.02,
+   "song_minutes": 23.844000000000083
+  }
+ ]
+}
