@@ -1,0 +1,52 @@
+{
+ "bird": "gy6or6",
+ "n_syllables": 10000,
+ "n_days": 5,
+ "days": [
+  "2012-03-22",
+  "2012-03-23",
+  "2012-03-24",
+  "2012-03-25",
+  "2012-03-26"
+ ],
+ "spectrogram_shape": [
+  32,
+  100
+ ],
+ "labels": {
+  "a": 737,
+  "b": 741,
+  "c": 746,
+  "d": 801,
+  "e": 1458,
+  "f": 721,
+  "g": 652,
+  "h": 647,
+  "i": 2218,
+  "j": 624,
+  "k": 655
+ },
+ "dropped_offschema_or_rare_syllables": 173,
+ "excluded_labels": [
+  "0",
+  "@",
+  "s",
+  "u",
+  "w",
+  "x",
+  "y",
+  "z"
+ ],
+ "skipped_date_mismatch_files": 10,
+ "spec_params": {
+  "n_fft": 512,
+  "hop_length": 64,
+  "freq_range_hz": [
+   500,
+   10000
+  ],
+  "max_duration_s": 0.2,
+  "n_freq_bins": 32,
+  "dynamic_range_db": 60.0
+ }
+}

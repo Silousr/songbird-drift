@@ -252,3 +252,81 @@ Phase 2 features or Phase 3 statistics that depend on finer timing.
 **Why:** below that tolerance the segmenter and the human annotation simply disagree, so a
 feature resolving to 2 ms would be reporting segmentation noise as signal. Better to bound
 this now than to discover it as an unexplained variance component in Phase 3.
+
+---
+
+## Phase 2 — Embedding and fidelity gate (2026-08-03)
+
+### D2.1 — Test within-type distance fidelity, not just label recovery
+
+The gate has two halves. Between-type fidelity (can human labels be recovered?) is the
+one usually reported. Within-type fidelity — do distances *inside* a syllable type track
+acoustic differences? — is measured here by `within_type_distance_correlation`.
+
+**Why:** drift in crystallised song is a within-type phenomenon. Renditions of syllable
+`b` change shape while staying recognisably `b`. An embedding that maps every rendition
+onto its type centroid classifies perfectly and carries no drift signal whatsoever. Label
+recovery is structurally blind to that failure.
+
+This was not hypothetical. On these data **k-NN label recovery was 0.9917 for every
+representation tested** — pixels, PCA at 8/16/32/64/128 dimensions, UMAP at 2/8/16/32.
+Used alone, criterion 1 would have declared them all equally fit.
+
+### D2.2 — Measure drift in PCA space; reject UMAP as a measurement space
+
+Within-type ρ: PCA-64 scores **0.996** (`gy6or6`) and **0.997** (`or60yw70`). UMAP-8
+scores **0.662** and **0.450**.
+
+Raising UMAP's dimensionality does not help — ρ goes 0.582 (2d), 0.723 (8d), 0.704 (16d),
+0.683 (32d), i.e. it plateaus and then declines, while PCA rises monotonically to 0.999 at
+128d. The distortion is intrinsic: UMAP optimises neighbourhood topology and cluster
+separation, and within-type metric structure is what it trades away.
+
+**Choice:** compute drift in PCA space with ≥64 components. Use UMAP for visualisation only.
+
+**Why this is worth stating loudly:** the brief points at the AVGN approach (learned latent
++ UMAP), and UMAP is the field-standard representation for songbird repertoire work. A
+drift metric computed in UMAP space would have been badly attenuated **with no warning
+sign** — its label recovery (0.993) and silhouette (best of all three) both look healthy.
+This is precisely the "measuring noise" failure the gate was put there to catch.
+
+### D2.3 — Do not use silhouette score to select an embedding here
+
+On `gy6or6` UMAP has the best silhouette (0.355 vs PCA's 0.317) and the worst within-type
+fidelity (0.662 vs 0.996). Within PCA, silhouette *falls* as fidelity rises: 0.411 at 16d
+(ρ=0.966) versus 0.295 at 128d (ρ=0.999).
+
+**Choice:** report silhouette for documentation, never as a selection criterion.
+
+**Why:** silhouette rewards tight, well-separated clusters — which is exactly the
+within-type compression that destroys the drift signal. For this project it is not merely
+uninformative, it is anti-correlated with the objective.
+
+### D2.4 — Time-pad syllables rather than time-stretching them
+
+Syllables are padded to a fixed 200 ms window and truncated beyond it, not rescaled to a
+common length.
+
+**Why:** time-stretching normalises duration away, and syllable duration is one of the
+acoustic properties most likely to move when song destabilises. Padding keeps duration
+visible to the embedding. The cost is that syllables above 200 ms are truncated; at the
+measured 99th percentile of 123 ms this affects very few.
+
+### D2.5 — Normalise amplitude away, deliberately
+
+Each syllable is normalised over a fixed 60 dB range below **its own** peak, discarding
+absolute amplitude.
+
+**Why:** recording gain is not song. Gain that drifts across days — a mic nudged, a
+preamp adjusted — would otherwise be indistinguishable from the drift being measured. The
+cost is that genuine changes in song amplitude become invisible; that is the right trade
+when the alternative is a confound that mimics the signal.
+
+### D2.6 — Excluded off-schema labels by identity, not by frequency
+
+`0`, `x`, `y`, `z` and similar are dropped explicitly rather than by a rarity threshold
+(173 syllables for `gy6or6`, 134 for `or60yw70`).
+
+**Why:** a pure count threshold would silently delete genuinely rare *song* syllables
+along with the noise classes. Excluding by identity keeps the criterion about what the
+symbol means rather than how often it happens to occur.

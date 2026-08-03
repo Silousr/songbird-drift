@@ -1,0 +1,93 @@
+{
+ "data": "results/phase2/or60yw70_syllables.npz",
+ "fit_day": "2012-09-27",
+ "later_days": [
+  "2012-09-28",
+  "2012-09-29",
+  "2012-09-30",
+  "2012-10-01"
+ ],
+ "n_syllables": 10000,
+ "n_labels": 8,
+ "majority_class_baseline": 0.2404,
+ "k": 5,
+ "n_pca": 64,
+ "n_umap": 8,
+ "embeddings": {
+  "pixels": {
+   "within_type_distance_rho": 1.0,
+   "dimensions": 3200,
+   "within_day_accuracy": 0.9967,
+   "cross_day_accuracy": {
+    "2012-09-28": 0.9925,
+    "2012-09-29": 0.9875,
+    "2012-09-30": 0.986,
+    "2012-10-01": 0.9695
+   },
+   "cross_day_mean": 0.9839,
+   "cross_day_drop": 0.0128,
+   "nn_purity_heldout": 0.9983,
+   "silhouette_heldout": 0.3475,
+   "per_label_within_day": {
+    "a": 0.9934,
+    "b": 1.0,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 1.0,
+    "g": 0.9412,
+    "i": 1.0
+   }
+  },
+  "pca": {
+   "within_type_distance_rho": 0.9971,
+   "dimensions": 64,
+   "within_day_accuracy": 0.9983,
+   "cross_day_accuracy": {
+    "2012-09-28": 0.993,
+    "2012-09-29": 0.989,
+    "2012-09-30": 0.987,
+    "2012-10-01": 0.971
+   },
+   "cross_day_mean": 0.985,
+   "cross_day_drop": 0.0133,
+   "nn_purity_heldout": 0.9983,
+   "silhouette_heldout": 0.384,
+   "per_label_within_day": {
+    "a": 1.0,
+    "b": 1.0,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 1.0,
+    "g": 0.9412,
+    "i": 1.0
+   }
+  },
+  "umap": {
+   "within_type_distance_rho": 0.4504,
+   "dimensions": 8,
+   "within_day_accuracy": 0.995,
+   "cross_day_accuracy": {
+    "2012-09-28": 0.99,
+    "2012-09-29": 0.983,
+    "2012-09-30": 0.981,
+    "2012-10-01": 0.964
+   },
+   "cross_day_mean": 0.9795,
+   "cross_day_drop": 0.0155,
+   "nn_purity_heldout": 0.99,
+   "silhouette_heldout": 0.3144,
+   "per_label_within_day": {
+    "a": 0.9934,
+    "b": 1.0,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 0.9677,
+    "g": 0.9412,
+    "i": 1.0
+   }
+  }
+ }
+}

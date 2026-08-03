@@ -23,10 +23,20 @@ documented in [DECISION_LOG.md](DECISION_LOG.md): a signed 16-bit filename count
 wraps negative in `bl26lb16/042012`, and 10 files in `gy6or6/032212` that are dated nine
 days earlier and belong to a different experimental phase (`washout`).
 
-**Next: Phase 2 (embedding + fidelity gate)**, carrying three constraints from Phase 1 —
-syllable boundaries are trustworthy only to ±5–10 ms, labeller instability contributes
-≈0.33% syllable error at 2-day separation, and `gr41rd51` is excluded from any
-unmanipulated set until its evTAF template is resolved with the authors.
+**Phase 2 (embedding + fidelity gate) complete — gate PASSED for PCA, FAILED for UMAP.**
+See [PHASE2_REPORT.md](PHASE2_REPORT.md). On 20,000 hand-labelled syllables, every
+representation recovered human labels at ~99% both within-day and across days — so label
+recovery alone could not choose between them. The deciding test was **within-type distance
+fidelity**, since drift is a within-type phenomenon: PCA-64 scores ρ = 0.996/0.997 across
+two birds, UMAP-8 only 0.662/0.450, and raising UMAP's dimensionality does not help.
+
+**Drift will be measured in PCA space; UMAP is for visualisation only.** Silhouette score
+turned out to be anti-correlated with what matters here and is not used for selection.
+
+**Next: Phase 3 (drift metric + within-bird noise floor)**, carrying: measure in PCA
+(≥64 components); boundaries trustworthy only to ±5–10 ms; labeller instability ≈0.33%
+syllable error at 2-day separation; `gr41rd51` excluded from any unmanipulated set until
+its evTAF template is resolved with the authors.
 
 ## Planned scope
 

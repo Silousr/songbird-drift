@@ -1,0 +1,102 @@
+{
+ "data": "results/phase2/gy6or6_syllables.npz",
+ "fit_day": "2012-03-22",
+ "later_days": [
+  "2012-03-23",
+  "2012-03-24",
+  "2012-03-25",
+  "2012-03-26"
+ ],
+ "n_syllables": 10000,
+ "n_labels": 11,
+ "majority_class_baseline": 0.2218,
+ "k": 5,
+ "n_pca": 64,
+ "n_umap": 8,
+ "embeddings": {
+  "pixels": {
+   "within_type_distance_rho": 1.0,
+   "dimensions": 3200,
+   "within_day_accuracy": 0.9917,
+   "cross_day_accuracy": {
+    "2012-03-23": 0.9925,
+    "2012-03-24": 0.9945,
+    "2012-03-25": 0.9945,
+    "2012-03-26": 0.997
+   },
+   "cross_day_mean": 0.9946,
+   "cross_day_drop": -0.003,
+   "nn_purity_heldout": 0.9933,
+   "silhouette_heldout": 0.2705,
+   "per_label_within_day": {
+    "a": 0.9796,
+    "b": 0.975,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 1.0,
+    "g": 1.0,
+    "h": 1.0,
+    "i": 0.979,
+    "j": 1.0,
+    "k": 1.0
+   }
+  },
+  "pca": {
+   "within_type_distance_rho": 0.9955,
+   "dimensions": 64,
+   "within_day_accuracy": 0.9917,
+   "cross_day_accuracy": {
+    "2012-03-23": 0.993,
+    "2012-03-24": 0.9945,
+    "2012-03-25": 0.994,
+    "2012-03-26": 0.9965
+   },
+   "cross_day_mean": 0.9945,
+   "cross_day_drop": -0.0028,
+   "nn_purity_heldout": 0.9933,
+   "silhouette_heldout": 0.3165,
+   "per_label_within_day": {
+    "a": 0.9796,
+    "b": 0.975,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 1.0,
+    "g": 1.0,
+    "h": 1.0,
+    "i": 0.979,
+    "j": 1.0,
+    "k": 1.0
+   }
+  },
+  "umap": {
+   "within_type_distance_rho": 0.6617,
+   "dimensions": 8,
+   "within_day_accuracy": 0.99,
+   "cross_day_accuracy": {
+    "2012-03-23": 0.99,
+    "2012-03-24": 0.994,
+    "2012-03-25": 0.9935,
+    "2012-03-26": 0.996
+   },
+   "cross_day_mean": 0.9934,
+   "cross_day_drop": -0.0034,
+   "nn_purity_heldout": 0.9817,
+   "silhouette_heldout": 0.3553,
+   "per_label_within_day": {
+    "a": 0.9796,
+    "b": 0.975,
+    "c": 1.0,
+    "d": 1.0,
+    "e": 1.0,
+    "f": 1.0,
+    "g": 1.0,
+    "h": 0.9714,
+    "i": 0.979,
+    "j": 1.0,
+    "k": 1.0
+   }
+  }
+ }
+}

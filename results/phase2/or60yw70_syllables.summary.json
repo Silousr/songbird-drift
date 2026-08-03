@@ -1,0 +1,49 @@
+{
+ "bird": "or60yw70",
+ "n_syllables": 10000,
+ "n_days": 5,
+ "days": [
+  "2012-09-27",
+  "2012-09-28",
+  "2012-09-29",
+  "2012-09-30",
+  "2012-10-01"
+ ],
+ "spectrogram_shape": [
+  32,
+  100
+ ],
+ "labels": {
+  "a": 2404,
+  "b": 2075,
+  "c": 951,
+  "d": 824,
+  "e": 534,
+  "f": 534,
+  "g": 313,
+  "i": 2365
+ },
+ "dropped_offschema_or_rare_syllables": 134,
+ "excluded_labels": [
+  "0",
+  "@",
+  "s",
+  "u",
+  "w",
+  "x",
+  "y",
+  "z"
+ ],
+ "skipped_date_mismatch_files": 0,
+ "spec_params": {
+  "n_fft": 512,
+  "hop_length": 64,
+  "freq_range_hz": [
+   500,
+   10000
+  ],
+  "max_duration_s": 0.2,
+  "n_freq_bins": 32,
+  "dynamic_range_db": 60.0
+ }
+}
