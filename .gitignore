@@ -28,3 +28,9 @@ data/raw/
 .DS_Store
 .idea/
 .vscode/
+
+# vak artefacts: prepped spectrogram datasets and checkpoints are large and regenerable
+results/**/prep_*/
+results/**/*.log
+results/**/lightning_logs/
+results/**/checkpoints/

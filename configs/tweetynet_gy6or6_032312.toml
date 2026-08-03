@@ -1,0 +1,47 @@
+# TweetyNet on Bengalese finch gy6or6, training day 2012-03-23 (dir 032312).
+#
+# labelset omits the off-schema characters that appear in this bird's annotations
+# ('0' n=144, 'x' n=3, 'y' n=2, 'z' n=1). Those mark contact calls and unclear sounds
+# rather than song syllables. vak excludes files containing out-of-labelset labels, so
+# this choice costs some files -- the count is reported in the prep log and recorded in
+# DECISION_LOG.md rather than left implicit.
+
+[vak.prep]
+data_dir = 'data/bfsongrepo/gy6or6/032312'
+output_dir = 'results/phase1/vak/prep_train'
+dataset_type = 'frame classification'
+input_type = 'spect'
+audio_format = 'wav'
+annot_format = 'simple-seq'
+labelset = 'iabcdefghjk'
+train_dur = 480
+val_dur = 120
+test_dur = 300
+
+[vak.prep.spect_params]
+fft_size = 512
+step_size = 64
+freq_cutoffs = [500, 10000]
+thresh = 6.25
+transform_type = 'log_spect'
+
+[vak.train]
+root_results_dir = 'results/phase1/vak/train'
+batch_size = 32
+num_epochs = 1
+standardize_frames = true
+shuffle = true
+val_step = 250
+ckpt_step = 500
+patience = 4
+num_workers = 2
+
+[vak.train.dataset]
+params = { window_size = 176 }
+path = "results/phase1/vak/prep_train/032312-vak-frame-classification-dataset-generated-260803_113140"
+
+[vak.train.model.TweetyNet]
+
+[vak.train.trainer]
+accelerator = 'cpu'
+devices = 1

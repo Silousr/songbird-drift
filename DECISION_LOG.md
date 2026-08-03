@@ -137,3 +137,91 @@ recorded now so they are not discovered later as if they were results:
 
 No public dataset provides a pharmacological critical-period manipulation in adult
 songbirds with annotated audio. Deafening (Zai et al.) is the closest proxy.
+
+---
+
+## Phase 1 — Ingestion and segmentation (2026-08-03)
+
+### D1.1 — Cross-check the two date encodings instead of trusting either
+
+Filenames carry DDMMYY; their directory carries MMDDYY. `parse_recording_filename`
+accepts the directory name and **raises** `DateMismatchError` on disagreement rather than
+picking a winner.
+
+**Why:** a silently mis-derived recording date corrupts the time axis while leaving every
+downstream number plausible. For a project whose entire output is "how much did this bird
+change between day A and day B", that is the highest-consequence failure available, and
+it is invisible unless checked explicitly. On the real data the two encodings agree for
+all 821 files loaded.
+
+### D1.2 — Count unannotated audio rather than dropping it silently
+
+`load_day` records `n_audio_files`, `n_annotated_files` and `n_unannotated_files` in
+`table.attrs`.
+
+**Why:** annotation coverage here is partial and uneven — the authors note 882 `gr41rd51`
+files carry no annotation. A loader that simply globs the CSVs makes a half-annotated day
+indistinguishable from a fully-annotated one, which would silently bias any per-day
+statistic. The days loaded so far happen to be at 100% coverage, which is worth knowing
+rather than assuming.
+
+### D1.3 — Set segmentation parameters from the ground-truth distribution
+
+Measured from the hand labels before choosing anything: 1st-percentile inter-syllable gap
+**9.3 ms**, median 25.6 ms, and **24.8% of gaps fall below 20 ms**; 1st-percentile
+syllable duration **32.9 ms**. Chosen: `min_silence_s=0.005`, `min_syllable_s=0.02`.
+
+**Why:** the conventional 20 ms `min_silence` would have merged roughly a quarter of all
+adjacent syllable pairs into single segments. That error would have propagated into every
+later stage as a systematically reduced syllable count, and it would have looked like a
+property of the bird rather than of the parameter.
+
+### D1.4 — Treat the segmentation result as algorithm agreement, not ground truth
+
+Pooled segment F1 **0.978** (precision 0.980, recall 0.975) over 14,681 syllables across
+8 bird-days, at 10 ms tolerance, generalising to held-out days and a second bird
+(0.943–0.996) with no retuning.
+
+**This number is weaker evidence than it looks and is labelled as such in the script.**
+The reference boundaries were themselves drawn with `evsonganaly`, an amplitude-threshold
+segmenter. Reproducing them shows this implementation recovers *that algorithm's* output,
+not that either finds the acoustically correct syllable edge.
+
+**Why it still matters:** it validates the ingestion path end-to-end on real audio, and it
+sets the boundary-precision budget for later stages — agreement collapses from 0.995 to
+0.920 to 0.458 as tolerance tightens from 10 to 5 to 2 ms, so **syllable boundaries are
+only trustworthy to roughly ±5–10 ms**. Any drift feature that depends on finer timing
+than that is measuring segmentation noise. The non-circular test is label recovery.
+
+### D1.5 — Exclude off-schema label characters, and report the cost
+
+`labelset = 'iabcdefghjk'` for `gy6or6`, excluding `0` (n=144), `x` (3), `y` (2), `z` (1).
+These mark contact calls and unclear sounds, not song syllables. vak drops whole files
+containing them: **9 of 162 files (5.6%)** on the training day, 4 on the evaluation day.
+
+**Why:** mixing "not a song syllable" into a syllable-type inventory would corrupt both
+the embedding and the syntax statistics. The cost is recorded here because it is a
+selection effect on which files enter the analysis, not a free choice.
+
+### D1.6 — CPU, because vak and Apple Silicon MPS are incompatible
+
+vak rejects `accelerator = 'mps'` (accepts only cpu/gpu/tpu/ipu), and routing through
+`'gpu'` — which Lightning maps to MPS on Apple Silicon — fails at the first batch:
+`Cannot convert a MPS Tensor to float64 dtype`. vak's spectrograms are float64.
+
+**Choice:** train on CPU. Batch size raised 8 → 32 and epochs cut to 1, since vak slides a
+window over *every* timebin: one epoch is ~247k windows (7,722 batches), which is ample.
+
+**Why this is worth recording:** it is a hard constraint on anyone reproducing this on a
+Mac, and it sets the practical ceiling on how much model training this project can do
+locally. Phases 2–4 should assume CPU-only unless a CUDA machine is available.
+
+### D1.7 — Evaluate the labeller on a *different day*, not just a held-out split
+
+The trained model is evaluated both on a within-day test split and on day 032512, two
+days after the training day.
+
+**Why:** this is the load-bearing check for the whole project. If an automatic labeller
+degrades on later days, that degradation is a time-varying artefact that would appear as
+song drift in a bird that has not changed. Phase 3's noise floor must therefore include
+labeller instability, or be bounded by it. A within-day test split cannot reveal this.

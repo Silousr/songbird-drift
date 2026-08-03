@@ -1,0 +1,43 @@
+# Evaluate the TweetyNet model trained on gy6or6 day 032312 against a DIFFERENT day
+# (032512, two days later) from the same bird.
+#
+# This is the measurement that matters for drift work. If a labeller trained on one day
+# degrades on later days, that degradation is itself a spurious time-varying signal --
+# it would show up as apparent song change when the bird has not changed at all. Any
+# drift metric built on automatic labels has to be corrected for this, or bounded by it.
+#
+# checkpoint_path and labelmap_path are filled in by scripts/phase1_eval_crossday.py
+# from the completed training run.
+
+[vak.prep]
+data_dir = 'data/bfsongrepo/gy6or6/032512'
+output_dir = 'results/phase1/vak/prep_eval_032512'
+dataset_type = 'frame classification'
+input_type = 'spect'
+audio_format = 'wav'
+annot_format = 'simple-seq'
+labelset = 'iabcdefghjk'
+test_dur = 600
+
+[vak.prep.spect_params]
+fft_size = 512
+step_size = 64
+freq_cutoffs = [500, 10000]
+thresh = 6.25
+transform_type = 'log_spect'
+
+[vak.eval]
+output_dir = 'results/phase1/vak/eval_032512'
+batch_size = 32
+num_workers = 2
+post_tfm_kwargs = { majority_vote = true, min_segment_dur = 0.01 }
+
+[vak.eval.dataset]
+params = { window_size = 176 }
+path = "results/phase1/vak/prep_eval_032512/032512-vak-frame-classification-dataset-generated-260803_114124"
+
+[vak.eval.model.TweetyNet]
+
+[vak.eval.trainer]
+accelerator = 'cpu'
+devices = 1
