@@ -3,22 +3,27 @@ name = "songbird"
 version = "0.1.0"
 description = "Within-bird song drift measurement with a calibrated noise floor"
 requires-python = ">=3.12"
+# Core dependencies only. librosa and praat-parselmouth were in the original stack plan
+# but are not used -- the STFT is scipy.signal -- and librosa pulls an old numba/llvmlite
+# that fails to build on Python 3.12. Declaring an unused dependency that breaks a fresh
+# install is worse than not using it.
 dependencies = [
-    "numpy",
-    "pandas",
-    "scipy",
-    "scikit-learn",
-    "librosa",
-    "soundfile",
-    "h5py",
-    "crowsetta",
-    "praat-parselmouth",
-    "matplotlib",
+    "numpy>=1.26",
+    "pandas>=2.0",
+    "scipy>=1.11",
+    "scikit-learn>=1.3",
+    "soundfile>=0.12",
+    "crowsetta>=5.0",
+    "matplotlib>=3.7",
 ]
 
 [project.optional-dependencies]
+# Learned segmentation with vak + TweetyNet. Heavy (pulls torch) and only needed to
+# produce annotations; the analysis itself does not require it.
 segment = ["vak>=1.1.0"]
-dev = ["pytest"]
+# Reading the Duke developmental deposit's HDF5 latents, for the validation scripts.
+validate = ["h5py>=3.8"]
+dev = ["pytest>=7.0"]
 
 [project.scripts]
 songbird = "songbird.cli:main"

@@ -22,6 +22,16 @@ uv venv --python 3.12 .venv
 uv pip install -e .
 ```
 
+Optional extras, neither needed for the analysis itself:
+
+```bash
+uv pip install -e ".[segment]"   # vak + TweetyNet, to produce annotations (pulls torch)
+uv pip install -e ".[validate]"  # h5py, for the developmental validation scripts
+```
+
+Verified from scratch: a clean 3.12 environment installs in ~235 MB and passes all 259
+tests.
+
 Check it works, and see the whole workflow in about a minute:
 
 ```bash

@@ -600,3 +600,30 @@ and bird-specific (`bl26lb16`'s is 3x the others, from fewer days and types).
 **Why:** a manipulation may move either, both, or neither. "Neither" is only interpretable
 as evidence of no change if both were actually measured — otherwise it is just the absence
 of the one test that was run.
+
+
+---
+
+## Packaging — dependencies (2026-08-03)
+
+### P1 — Drop `librosa` and `praat-parselmouth`; they were declared but never used
+
+Both were in the original stack plan. Neither is imported anywhere: the STFT is
+`scipy.signal`, and no Praat feature was needed once the embedding path was settled.
+
+**Why this mattered enough to record:** a fresh-environment install *failed* because
+`librosa` resolves an old `numba`/`llvmlite` that will not build on Python 3.12. The
+development environment worked only because it had been built up incrementally with
+compatible versions already present — the failure was invisible until a genuinely clean
+install was attempted.
+
+A declared dependency that is never used is not free. It is a build failure waiting for
+the first person who installs from scratch, which is exactly the person this toolkit is for.
+
+**Also moved to optional extras:** `vak` (learned segmentation, pulls torch) and `h5py`
+(only the developmental validation scripts read HDF5). The analysis itself needs neither,
+so the default install is 235 MB rather than several gigabytes.
+
+**Verification:** a clean Python 3.12 environment now installs the package and passes all
+259 tests, and the worked example recovers its injected effect. That check is worth
+repeating before any release — it is the only one that catches this class of defect.

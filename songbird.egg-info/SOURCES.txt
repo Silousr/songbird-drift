@@ -4,6 +4,7 @@ songbird/__init__.py
 songbird/cli.py
 songbird/group.py
 songbird/pipeline.py
+songbird/plots.py
 songbird/power.py
 songbird.egg-info/PKG-INFO
 songbird.egg-info/SOURCES.txt
@@ -15,6 +16,7 @@ songbird/drift/__init__.py
 songbird/drift/centroid.py
 songbird/drift/dispersion.py
 songbird/drift/inference.py
+songbird/drift/syntax.py
 songbird/features/__init__.py
 songbird/features/spectrogram.py
 songbird/ingest/__init__.py
@@ -40,7 +42,10 @@ tests/test_group.py
 tests/test_label_metrics.py
 tests/test_load_day.py
 tests/test_pipeline.py
+tests/test_plots.py
 tests/test_power.py
+tests/test_quickstart.py
 tests/test_segmentation_metrics.py
 tests/test_syllable_spectrogram.py
+tests/test_syntax.py
 tests/test_within_type_fidelity.py

@@ -3,17 +3,16 @@ Name: songbird
 Version: 0.1.0
 Summary: Within-bird song drift measurement with a calibrated noise floor
 Requires-Python: >=3.12
-Requires-Dist: numpy
-Requires-Dist: pandas
-Requires-Dist: scipy
-Requires-Dist: scikit-learn
-Requires-Dist: librosa
-Requires-Dist: soundfile
-Requires-Dist: h5py
-Requires-Dist: crowsetta
-Requires-Dist: praat-parselmouth
-Requires-Dist: matplotlib
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.0
+Requires-Dist: scipy>=1.11
+Requires-Dist: scikit-learn>=1.3
+Requires-Dist: soundfile>=0.12
+Requires-Dist: crowsetta>=5.0
+Requires-Dist: matplotlib>=3.7
 Provides-Extra: segment
 Requires-Dist: vak>=1.1.0; extra == "segment"
+Provides-Extra: validate
+Requires-Dist: h5py>=3.8; extra == "validate"
 Provides-Extra: dev
-Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest>=7.0; extra == "dev"
