@@ -28,6 +28,7 @@ import argparse
 import json
 import re
 import subprocess
+import tomllib
 import sys
 from pathlib import Path
 
@@ -76,15 +77,12 @@ def patch_config(config_path: Path, results_dir: Path) -> None:
 
 
 def run_eval(config_path: Path) -> int:
+    vak = Path(sys.executable).with_name("vak")
+    if not vak.exists():
+        raise SystemExit(f"vak executable not found next to {sys.executable}")
     result = subprocess.run(
-        [sys.executable.replace("python", "vak"), "eval", str(config_path)],
-        capture_output=True, text=True,
+        [str(vak), "eval", str(config_path)], capture_output=True, text=True
     )
-    if result.returncode != 0:
-        vak = Path(sys.executable).with_name("vak")
-        result = subprocess.run(
-            [str(vak), "eval", str(config_path)], capture_output=True, text=True
-        )
     print(result.stdout[-2000:])
     if result.returncode != 0:
         print(result.stderr[-3000:], file=sys.stderr)
@@ -94,7 +92,8 @@ def run_eval(config_path: Path) -> int:
 def collect_metrics(output_dir: Path) -> dict:
     """Read whatever metrics vak wrote into the eval output directory."""
     metrics = {}
-    for csv_path in sorted(output_dir.rglob("*.csv")):
+    newest = sorted(output_dir.rglob("eval_*.csv"))[-1:]
+    for csv_path in newest:
         try:
             import pandas as pd
 
@@ -127,10 +126,14 @@ def main() -> None:
     if code != 0:
         raise SystemExit(f"vak eval failed with exit code {code}")
 
-    output_dir = Path(
-        re.search(r"output_dir = '([^']+)'", args.config.read_text()).group(1)
-    )
+    # Parse the TOML rather than regexing: a config with a [vak.prep] table has its own
+    # output_dir, and a naive search picks that one up instead of the eval table's.
+    with open(args.config, "rb") as handle:
+        config = tomllib.load(handle)
+    output_dir = Path(config["vak"]["eval"]["output_dir"])
     metrics = collect_metrics(output_dir)
+    if not metrics:
+        raise SystemExit(f"no eval_*.csv with numeric metrics found under {output_dir}")
     print(json.dumps(metrics, indent=1))
 
     if args.out:

@@ -27,6 +27,9 @@ thresh = 6.25
 transform_type = 'log_spect'
 
 [vak.eval]
+frames_standardizer_path = "results/phase1/vak/train/results_260803_113844/FramesStandardizer"
+labelmap_path = "results/phase1/vak/train/results_260803_113844/labelmap.json"
+checkpoint_path = "results/phase1/vak/train/results_260803_113844/TweetyNet/checkpoints/max-val-acc-checkpoint.pt"
 output_dir = 'results/phase1/vak/eval_032512'
 batch_size = 32
 num_workers = 2

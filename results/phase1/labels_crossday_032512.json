@@ -1,0 +1,23 @@
+{
+ "training_run": "results/phase1/vak/train/results_260803_113844",
+ "config": "configs/tweetynet_eval_gy6or6_032512.toml",
+ "metrics": {
+  "eval_TweetyNet_260803_120534.csv": {
+   "avg_val_acc_epoch": 0.9884952306747437,
+   "avg_val_acc_tfm_epoch": 0.9886802434921264,
+   "avg_val_character_error_rate_epoch": 0.018868526443839,
+   "avg_val_character_error_rate_tfm_epoch": 0.0033196753356605,
+   "avg_val_fscore_epoch": 0.9897268414497375,
+   "avg_val_fscore_tfm_epoch": 0.9949132800102234,
+   "avg_val_levenshtein_epoch": 1.047619104385376,
+   "avg_val_levenshtein_tfm_epoch": 0.1964285671710968,
+   "avg_val_loss_epoch": 0.0317858830094337,
+   "avg_val_precision_epoch": 0.9830310344696044,
+   "avg_val_precision_tfm_epoch": 0.993767499923706,
+   "avg_val_recall_epoch": 0.9967847466468812,
+   "avg_val_recall_tfm_epoch": 0.9960955381393432,
+   "avg_val_rval_epoch": 0.9852795600891112,
+   "avg_val_rval_tfm_epoch": 0.9945785999298096
+  }
+ }
+}

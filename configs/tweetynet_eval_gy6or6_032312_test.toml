@@ -1,0 +1,24 @@
+# Evaluate the trained model on the held-out TEST SPLIT OF ITS OWN TRAINING DAY (032312).
+#
+# This is the within-day baseline. Compared against the cross-day evaluation on 032512,
+# the difference isolates how much of the labeller's error is specific to generalising
+# across days -- which is the component that would masquerade as song drift.
+
+[vak.eval]
+frames_standardizer_path = "results/phase1/vak/train/results_260803_113844/FramesStandardizer"
+labelmap_path = "results/phase1/vak/train/results_260803_113844/labelmap.json"
+checkpoint_path = "results/phase1/vak/train/results_260803_113844/TweetyNet/checkpoints/max-val-acc-checkpoint.pt"
+output_dir = 'results/phase1/vak/eval_032312_test'
+batch_size = 32
+num_workers = 2
+post_tfm_kwargs = { majority_vote = true, min_segment_dur = 0.01 }
+
+[vak.eval.dataset]
+path = "results/phase1/vak/prep_train/032312-vak-frame-classification-dataset-generated-260803_113140"
+params = { window_size = 176 }
+
+[vak.eval.model.TweetyNet]
+
+[vak.eval.trainer]
+accelerator = 'cpu'
+devices = 1

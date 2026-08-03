@@ -1,0 +1,35 @@
+{
+ "frame accuracy": {
+  "within_day_tfm": 0.9887986779212952,
+  "cross_day_tfm": 0.9886802434921264,
+  "within_day_raw": 0.9887401461601256,
+  "cross_day_raw": 0.9884952306747437
+ },
+ "syllable error rate": {
+  "within_day_tfm": 0.001527494052425,
+  "cross_day_tfm": 0.0033196753356605,
+  "within_day_raw": 0.0149766597896814,
+  "cross_day_raw": 0.018868526443839
+ },
+ "segment F-score": {
+  "within_day_tfm": 0.9927505254745485,
+  "cross_day_tfm": 0.9949132800102234,
+  "within_day_raw": 0.988494038581848,
+  "cross_day_raw": 0.9897268414497375
+ },
+ "edit distance / song": {
+  "within_day_tfm": 0.1071428582072258,
+  "cross_day_tfm": 0.1964285671710968,
+  "within_day_raw": 1.0714285373687744,
+  "cross_day_raw": 1.047619104385376
+ },
+ "_meta": {
+  "train_day": "2012-03-23 (032312)",
+  "eval_day": "2012-03-25 (032512)",
+  "separation_days": 2,
+  "bird": "gy6or6",
+  "n_syllable_classes": 11,
+  "best_val_acc_during_training": 0.989,
+  "note": "single bird, 2-day separation only; longer gaps untested"
+ }
+}

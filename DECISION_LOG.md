@@ -225,3 +225,30 @@ days after the training day.
 degrades on later days, that degradation is a time-varying artefact that would appear as
 song drift in a bird that has not changed. Phase 3's noise floor must therefore include
 labeller instability, or be bounded by it. A within-day test split cannot reveal this.
+
+### D1.8 — Report the labeller's cross-day gap as a floor, not a footnote
+
+TweetyNet trained on `gy6or6` 032312 and evaluated on 032512 (two days later) gives frame
+accuracy 0.9887 vs 0.9888 within-day, and syllable error rate 0.0033 vs 0.0015.
+
+**Choice:** record **0.33% syllable error at 2-day separation** (of which ~0.18 points
+comes from crossing days) as an explicit floor that Phase 3 drift must exceed, and refuse
+to extrapolate it beyond 2 days.
+
+**Why:** an automatic labeller that degrades over time produces apparent song change in a
+bird that has not changed. Here it does not degrade materially, which is the result that
+makes automatic labelling usable at all for this project — but the test covers one bird,
+11 classes and a 2-day gap, because the Bengalese finch repository spans at most 5 days.
+Whether it holds at 10-day (canary) or 60-day (developmental) separations is untested.
+Assuming it does would smuggle an unmeasured artefact into the noise floor.
+
+### D1.9 — Boundary timing budget of ±5–10 ms
+
+Segment F1 falls 0.997 / 0.995 / 0.920 / 0.458 at tolerances of 20 / 10 / 5 / 2 ms.
+
+**Choice:** treat ±5–10 ms as the resolution limit of any syllable boundary, and reject
+Phase 2 features or Phase 3 statistics that depend on finer timing.
+
+**Why:** below that tolerance the segmenter and the human annotation simply disagree, so a
+feature resolving to 2 ms would be reporting segmentation noise as signal. Better to bound
+this now than to discover it as an unexplained variance component in Phase 3.
