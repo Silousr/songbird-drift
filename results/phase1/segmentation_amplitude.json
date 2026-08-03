@@ -1,106 +1,236 @@
 {
- "segmenter": {
-  "threshold": 0.01,
+ "shape_params": {
   "min_syllable_s": 0.02,
   "min_silence_s": 0.005,
   "smooth_ms": 2.0
  },
  "tolerance_s": 0.01,
  "files_per_day": 25,
+ "mode": "per-bird fitted threshold",
+ "thresholds": {
+  "bl26lb16": {
+   "threshold": 0.004,
+   "fit_f1": 0.8075,
+   "fit_day": "041912"
+  },
+  "gr41rd51": {
+   "threshold": 0.015,
+   "fit_f1": 0.8837,
+   "fit_day": "061912"
+  },
+  "gy6or6": {
+   "threshold": 0.006,
+   "fit_f1": 0.9699,
+   "fit_day": "032212"
+  },
+  "or60yw70": {
+   "threshold": 0.01,
+   "fit_f1": 0.9541,
+   "fit_day": "092712"
+  }
+ },
  "days": [
   {
-   "day": "032312",
+   "bird": "bl26lb16",
+   "day": "042012",
+   "threshold": 0.004,
+   "n_files": 25,
+   "n_true": 1799,
+   "n_pred": 1936,
+   "n_matched": 1725,
+   "precision": 0.891,
+   "recall": 0.9589,
+   "f1": 0.9237,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
+  },
+  {
+   "bird": "bl26lb16",
+   "day": "042112",
+   "threshold": 0.004,
+   "n_files": 25,
+   "n_true": 1956,
+   "n_pred": 2018,
+   "n_matched": 1893,
+   "precision": 0.9381,
+   "recall": 0.9678,
+   "f1": 0.9527,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
+  },
+  {
+   "bird": "gr41rd51",
+   "day": "062012",
+   "threshold": 0.015,
+   "n_files": 25,
+   "n_true": 1161,
+   "n_pred": 1137,
+   "n_matched": 1101,
+   "precision": 0.9683,
+   "recall": 0.9483,
+   "f1": 0.9582,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 363
+  },
+  {
+   "bird": "gr41rd51",
+   "day": "062112",
+   "threshold": 0.015,
+   "n_files": 25,
+   "n_true": 1111,
+   "n_pred": 1086,
+   "n_matched": 1048,
+   "precision": 0.965,
+   "recall": 0.9433,
+   "f1": 0.954,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 252
+  },
+  {
+   "bird": "gr41rd51",
+   "day": "062212",
+   "threshold": 0.015,
+   "n_files": 25,
+   "n_true": 1050,
+   "n_pred": 1030,
+   "n_matched": 948,
+   "precision": 0.9204,
+   "recall": 0.9029,
+   "f1": 0.9115,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
+  },
+  {
+   "bird": "gr41rd51",
+   "day": "062312",
+   "threshold": 0.015,
+   "n_files": 25,
+   "n_true": 1176,
+   "n_pred": 1155,
+   "n_matched": 1125,
+   "precision": 0.974,
+   "recall": 0.9566,
+   "f1": 0.9653,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
+  },
+  {
    "bird": "gy6or6",
+   "day": "032312",
+   "threshold": 0.006,
    "n_files": 25,
    "n_true": 1608,
-   "n_pred": 1603,
-   "n_matched": 1563,
-   "precision": 0.975,
-   "recall": 0.972,
-   "f1": 0.9735
+   "n_pred": 1607,
+   "n_matched": 1593,
+   "precision": 0.9913,
+   "recall": 0.9907,
+   "f1": 0.991,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   },
   {
-   "day": "032512",
    "bird": "gy6or6",
+   "day": "032412",
+   "threshold": 0.006,
+   "n_files": 25,
+   "n_true": 1676,
+   "n_pred": 1673,
+   "n_matched": 1649,
+   "precision": 0.9857,
+   "recall": 0.9839,
+   "f1": 0.9848,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
+  },
+  {
+   "bird": "gy6or6",
+   "day": "032512",
+   "threshold": 0.006,
    "n_files": 25,
    "n_true": 1427,
-   "n_pred": 1426,
-   "n_matched": 1366,
-   "precision": 0.9579,
-   "recall": 0.9573,
-   "f1": 0.9576
+   "n_pred": 1422,
+   "n_matched": 1390,
+   "precision": 0.9775,
+   "recall": 0.9741,
+   "f1": 0.9758,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   },
   {
-   "day": "032612",
    "bird": "gy6or6",
+   "day": "032612",
+   "threshold": 0.006,
    "n_files": 25,
    "n_true": 1700,
-   "n_pred": 1690,
-   "n_matched": 1616,
-   "precision": 0.9562,
-   "recall": 0.9506,
-   "f1": 0.9534
+   "n_pred": 1701,
+   "n_matched": 1679,
+   "precision": 0.9871,
+   "recall": 0.9876,
+   "f1": 0.9874,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   },
   {
-   "day": "092712",
    "bird": "or60yw70",
-   "n_files": 25,
-   "n_true": 2286,
-   "n_pred": 2281,
-   "n_matched": 2271,
-   "precision": 0.9956,
-   "recall": 0.9934,
-   "f1": 0.9945
-  },
-  {
    "day": "092812",
-   "bird": "or60yw70",
+   "threshold": 0.01,
    "n_files": 25,
    "n_true": 1905,
    "n_pred": 1887,
    "n_matched": 1883,
    "precision": 0.9979,
    "recall": 0.9885,
-   "f1": 0.9931
+   "f1": 0.9931,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   },
   {
-   "day": "092912",
    "bird": "or60yw70",
+   "day": "092912",
+   "threshold": 0.01,
    "n_files": 25,
    "n_true": 1997,
    "n_pred": 1998,
    "n_matched": 1982,
    "precision": 0.992,
    "recall": 0.9925,
-   "f1": 0.9922
+   "f1": 0.9922,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   },
   {
-   "day": "093012",
    "bird": "or60yw70",
+   "day": "093012",
+   "threshold": 0.01,
    "n_files": 25,
    "n_true": 2018,
    "n_pred": 2015,
    "n_matched": 2009,
    "precision": 0.997,
    "recall": 0.9955,
-   "f1": 0.9963
+   "f1": 0.9963,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   },
   {
-   "day": "100112",
    "bird": "or60yw70",
+   "day": "100112",
+   "threshold": 0.01,
    "n_files": 25,
    "n_true": 1740,
    "n_pred": 1709,
    "n_matched": 1626,
    "precision": 0.9514,
    "recall": 0.9345,
-   "f1": 0.9429
+   "f1": 0.9429,
+   "n_date_mismatch_files": 0,
+   "n_unannotated_files": 0
   }
  ],
  "pooled": {
-  "f1": 0.9775,
-  "precision": 0.9799,
-  "recall": 0.9751,
-  "n_true": 14681
+  "f1": 0.9688,
+  "precision": 0.9677,
+  "recall": 0.9699,
+  "n_true": 22324
  }
 }

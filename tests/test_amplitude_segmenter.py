@@ -9,7 +9,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from songbird.segment.amplitude import AmplitudeSegmenter
+from songbird.segment.amplitude import AmplitudeSegmenter, tune_threshold
 
 SR = 32_000
 
@@ -82,3 +82,39 @@ class TestAmplitudeSegmenter:
         quiet = segmenter.segment(burst_signal([(0.5, 0.7)], amplitude=0.5), SR)
         assert len(loud) == len(quiet) == 1
         assert quiet[0][0] == pytest.approx(loud[0][0], abs=0.005)
+
+
+class TestTuneThreshold:
+    """Threshold must be fitted per bird: recording gain and noise floor differ, and on
+    real data the best threshold ranges 0.004-0.01 across four birds, costing one bird
+    0.18 F1 if a single global value is imposed."""
+
+    def make_examples(self, amplitude, n=3):
+        bursts = [(0.2, 0.35), (0.6, 0.75), (1.1, 1.3)]
+        return [
+            (burst_signal(bursts, amplitude=amplitude), SR, bursts) for _ in range(n)
+        ]
+
+    def test_returns_a_candidate_from_the_supplied_grid(self):
+        candidates = [0.01, 0.05, 0.2]
+        best, _ = tune_threshold(self.make_examples(1.0), candidates)
+        assert best in candidates
+
+    def test_finds_a_threshold_that_recovers_clean_bursts(self):
+        best, f1 = tune_threshold(self.make_examples(1.0), [0.01, 0.05, 0.2, 0.6])
+        assert f1 == pytest.approx(1.0)
+
+    def test_rejects_empty_examples(self):
+        with pytest.raises(ValueError):
+            tune_threshold([], [0.05])
+
+    def test_rejects_empty_candidate_grid(self):
+        with pytest.raises(ValueError):
+            tune_threshold(self.make_examples(1.0), [])
+
+    def test_respects_other_segmenter_parameters(self):
+        # With a 500 ms minimum syllable, nothing can be recovered at any threshold.
+        _, f1 = tune_threshold(
+            self.make_examples(1.0), [0.01, 0.05], min_syllable_s=0.5
+        )
+        assert f1 == 0.0

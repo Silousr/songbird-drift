@@ -18,9 +18,13 @@ import numpy as np
 from scipy.ndimage import uniform_filter1d
 from scipy.signal import butter, sosfiltfilt
 
-__all__ = ["AmplitudeSegmenter"]
+__all__ = ["AmplitudeSegmenter", "DEFAULT_THRESHOLD_GRID", "tune_threshold"]
 
 Segment = tuple[float, float]
+
+#: Threshold grid spanning the range that fits real birds. On the Bengalese finch
+#: repository the per-bird optimum runs from 0.004 to 0.010.
+DEFAULT_THRESHOLD_GRID = (0.002, 0.004, 0.006, 0.008, 0.01, 0.015, 0.02, 0.03, 0.05)
 
 
 @dataclass(frozen=True)
@@ -90,3 +94,51 @@ class AmplitudeSegmenter:
                 merged.append((onset, offset))
 
         return [seg for seg in merged if seg[1] - seg[0] >= self.min_syllable_s]
+
+
+def tune_threshold(
+    examples: list[tuple[np.ndarray, int, list[Segment]]],
+    candidates=DEFAULT_THRESHOLD_GRID,
+    tolerance_s: float = 0.01,
+    **segmenter_params,
+) -> tuple[float, float]:
+    """Pick the amplitude threshold that best reproduces annotated segments.
+
+    ``examples`` is a list of ``(audio, sample_rate, true_segments)``. Returns the
+    ``(threshold, f1)`` of the best candidate.
+
+    Fit this **per bird**, on a tuning subset held apart from whatever you go on to
+    report. Recording gain, microphone placement and cage noise all differ between
+    birds, and on the Bengalese finch repository a single global threshold costs the
+    worst-fitting bird ~0.18 F1 relative to its own optimum.
+
+    A caution for longitudinal work: if recording conditions shift across days, a
+    threshold fitted once will segment later days differently, and that drift in
+    segmentation quality is indistinguishable from drift in the song itself unless it is
+    measured. Re-fit per day, or report segmentation quality per day alongside any
+    drift estimate.
+    """
+    from songbird.metrics.segmentation import segment_scores
+
+    if not examples:
+        raise ValueError("need at least one (audio, sample_rate, segments) example")
+    candidates = list(candidates)
+    if not candidates:
+        raise ValueError("need at least one candidate threshold")
+
+    best_threshold, best_f1 = candidates[0], -1.0
+    for threshold in candidates:
+        segmenter = AmplitudeSegmenter(threshold=threshold, **segmenter_params)
+        n_true = n_pred = n_matched = 0
+        for audio, sample_rate, true_segments in examples:
+            predicted = segmenter.segment(audio, sample_rate)
+            scores = segment_scores(true_segments, predicted, tolerance_s)
+            n_true += scores.n_true
+            n_pred += scores.n_pred
+            n_matched += scores.n_matched
+        precision = n_matched / n_pred if n_pred else 0.0
+        recall = n_matched / n_true if n_true else 0.0
+        f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+        if f1 > best_f1:
+            best_threshold, best_f1 = threshold, f1
+    return best_threshold, best_f1

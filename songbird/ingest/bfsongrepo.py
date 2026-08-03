@@ -36,6 +36,7 @@ SYLLABLE_COLUMNS = (
     "day",
     "timestamp",
     "audio_file",
+    "template",
     "onset_s",
     "offset_s",
     "duration_s",
@@ -43,8 +44,15 @@ SYLLABLE_COLUMNS = (
     "source",
 )
 
+#: Policies for a filename date that contradicts its directory date.
+DATE_MISMATCH_POLICIES = ("raise", "skip")
+
 # Matches the invariant tail: DDMMYY_HHMM.serial.wav
-_TAIL = re.compile(r"(?P<date>\d{6})_(?P<time>\d{4})\.(?P<serial>\d+)\.wav$")
+#
+# The serial may be NEGATIVE: bl26lb16/042012 wraps a signed 16-bit counter from 32745 to
+# -32754 partway through the day (84 of its 202 files). Serial is therefore an opaque
+# identifier, not an ordering key -- order recordings by timestamp.
+_TAIL = re.compile(r"(?P<date>\d{6})_(?P<time>\d{4})\.(?P<serial>-?\d+)\.wav$")
 
 
 class DateMismatchError(ValueError):
@@ -162,13 +170,29 @@ def _finalise(rows: list[dict], coverage: dict[str, int]) -> pd.DataFrame:
     return table
 
 
-def load_day(day_dir: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
+def load_day(
+    day_dir: str | Path,
+    source: str = "bfsongrepo",
+    on_date_mismatch: str = "raise",
+) -> pd.DataFrame:
     """Load one ``{bird}/{MMDDYY}/`` directory into a canonical syllable table.
 
     Unannotated audio is counted in ``table.attrs`` rather than silently dropped --
     annotation coverage in this dataset is partial and uneven, and a day that is half
     annotated must not look like a day that is fully annotated.
+
+    ``on_date_mismatch`` controls what happens when a filename's date contradicts its
+    directory. ``"raise"`` (default) refuses to guess. ``"skip"`` drops those recordings
+    and records how many in ``attrs["n_date_mismatch_files"]``. This is not hypothetical:
+    ``gy6or6/032212`` contains 10 files dated 2012-03-13 and templated ``washout`` --
+    a different experimental phase filed under a baseline day.
     """
+    if on_date_mismatch not in DATE_MISMATCH_POLICIES:
+        raise ValueError(
+            f"on_date_mismatch must be one of {DATE_MISMATCH_POLICIES}, "
+            f"got {on_date_mismatch!r}"
+        )
+
     day_dir = Path(day_dir)
     bird = day_dir.parent.name
 
@@ -176,8 +200,18 @@ def load_day(day_dir: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
     annotations = sorted(day_dir.glob("*.wav.csv"))
 
     rows: list[dict] = []
+    n_mismatch = 0
     for annotation_path in annotations:
-        recording = parse_recording_filename(annotation_path.name, day_dir=day_dir.name)
+        try:
+            recording = parse_recording_filename(
+                annotation_path.name, day_dir=day_dir.name
+            )
+        except DateMismatchError:
+            if on_date_mismatch == "raise":
+                raise
+            n_mismatch += 1
+            continue
+
         for syllable in read_annotation_csv(annotation_path):
             rows.append(
                 {
@@ -185,6 +219,7 @@ def load_day(day_dir: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
                     "day": recording.day,
                     "timestamp": recording.timestamp,
                     "audio_file": annotation_path.name[: -len(".csv")],
+                    "template": recording.template,
                     "onset_s": syllable.onset_s,
                     "offset_s": syllable.offset_s,
                     "duration_s": syllable.duration_s,
@@ -197,11 +232,16 @@ def load_day(day_dir: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
         "n_audio_files": len(audio_files),
         "n_annotated_files": len(annotations),
         "n_unannotated_files": max(len(audio_files) - len(annotations), 0),
+        "n_date_mismatch_files": n_mismatch,
     }
     return _finalise(rows, coverage)
 
 
-def load_dataset(root: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
+def load_dataset(
+    root: str | Path,
+    source: str = "bfsongrepo",
+    on_date_mismatch: str = "raise",
+) -> pd.DataFrame:
     """Load an entire ``{bird}/{MMDDYY}/`` tree into one canonical syllable table."""
     root = Path(root)
     day_dirs = sorted(
@@ -210,12 +250,20 @@ def load_dataset(root: str | Path, source: str = "bfsongrepo") -> pd.DataFrame:
     if not day_dirs:
         raise FileNotFoundError(f"no {{bird}}/{{MMDDYY}} day directories under {root}")
 
-    tables = [load_day(day_dir, source=source) for day_dir in day_dirs]
+    tables = [
+        load_day(day_dir, source=source, on_date_mismatch=on_date_mismatch)
+        for day_dir in day_dirs
+    ]
     combined = pd.concat(tables, ignore_index=True) if tables else _empty_table()
     combined = combined.sort_values(["bird", "timestamp", "onset_s"], kind="stable")
     combined = combined.reset_index(drop=True)
 
-    for key in ("n_audio_files", "n_annotated_files", "n_unannotated_files"):
+    for key in (
+        "n_audio_files",
+        "n_annotated_files",
+        "n_unannotated_files",
+        "n_date_mismatch_files",
+    ):
         combined.attrs[key] = sum(table.attrs[key] for table in tables)
     combined.attrs["n_days"] = len(day_dirs)
     return combined

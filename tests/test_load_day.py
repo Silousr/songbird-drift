@@ -82,6 +82,36 @@ class TestLoadDay:
         day = make_day(tmp_path)
         assert load_day(day).attrs["n_unannotated_files"] == 0
 
+    def test_records_template_field_per_row(self, tmp_path):
+        # The template distinguishes experimental conditions: gy6or6 carries 'baseline'
+        # and 'washout' in the same directory, and every gr41rd51 file carries an evTAF
+        # detection template. Dropping it would erase that distinction.
+        day = make_day(tmp_path)
+        assert set(load_day(day)["template"]) == {"baseline"}
+
+    def test_skips_date_mismatches_when_policy_is_skip(self, tmp_path):
+        day = make_day(tmp_path)
+        (day / "gy6or6_washout_130312_1234.5464.wav").write_bytes(b"")
+        (day / "gy6or6_washout_130312_1234.5464.wav.csv").write_text(CSV_BODY)
+        table = load_day(day, on_date_mismatch="skip")
+        assert set(table["template"]) == {"baseline"}
+        assert table.attrs["n_date_mismatch_files"] == 1
+
+    def test_skip_policy_records_zero_when_all_dates_agree(self, tmp_path):
+        assert load_day(make_day(tmp_path), on_date_mismatch="skip").attrs[
+            "n_date_mismatch_files"
+        ] == 0
+
+    def test_default_policy_still_raises(self, tmp_path):
+        day = make_day(tmp_path)
+        (day / "gy6or6_washout_130312_1234.5464.wav.csv").write_text(CSV_BODY)
+        with pytest.raises(DateMismatchError):
+            load_day(day)
+
+    def test_rejects_unknown_policy(self, tmp_path):
+        with pytest.raises(ValueError):
+            load_day(make_day(tmp_path), on_date_mismatch="pretend-it-is-fine")
+
     def test_empty_day_yields_empty_table_with_expected_columns(self, tmp_path):
         day = tmp_path / "gy6or6" / "032212"
         day.mkdir(parents=True)

@@ -58,6 +58,14 @@ class TestParseRecordingFilename:
         with pytest.raises(ValueError):
             parse_recording_filename("not_a_song_file.txt")
 
+    def test_accepts_negative_serial_from_counter_overflow(self):
+        # bl26lb16/042012 wraps a signed 16-bit counter: 32745 -> -32754, affecting
+        # 84 of that day's 202 files. Real filename from the dataset.
+        rec = parse_recording_filename("bl26lb16_200412_1029.-32754.wav.csv")
+        assert rec.bird == "bl26lb16"
+        assert rec.timestamp == dt.datetime(2012, 4, 20, 10, 29)
+        assert rec.serial == -32754
+
 
 class TestParseDayDir:
     def test_parses_mmddyy_directory_name(self):
