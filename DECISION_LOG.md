@@ -544,3 +544,59 @@ intervals — is what Phases 3 and 4 built and what a wet lab would rely on, and
 exercised end-to-end here against an independently documented effect. But validating our
 own audio-to-embedding path would need the raw audio (291 GB against 30 GB free), so the
 claim is deliberately limited. Phases 1-2 establish that path separately on Bengalese finch.
+
+---
+
+## Phase 5 — Dispersion drift (2026-08-03)
+
+### D5.1 — Add a second metric for variability, not just location
+
+The log variance ratio `log(tr Var(b) / tr Var(a))` is exactly zero under a pure
+translation, so it measures something the centroid distance structurally cannot.
+
+**Why:** Phase 4 recorded that a manipulation increasing rendition-to-rendition
+variability without moving the mean would be invisible — and destabilised renditions are a
+plausible signature of a reopened critical period. The validation then confirmed the
+concern was real: on `grn394`, consecutive-day centroid drift gave a learning/crystallised
+ratio of 1.0x (no effect), while dispersion gives 1.43x against a 1.15x floor.
+
+Measured independence across three birds: Spearman rho = +0.05, +0.22, +0.41 (p = 0.69,
+0.14, 0.067). Weak and non-significant, so the two statistics are largely seeing different
+things and both are worth carrying.
+
+### D5.2 — No closed-form bias correction; rely on the bootstrap and split-half null
+
+Unlike the centroid distance, dispersion has no analytic correction applied here.
+
+**Why:** the quantity of interest is *total* rendition-to-rendition variance, which
+includes the within-bout component that collapsing to bout means would discard. Rather
+than invent a correction, uncertainty comes from a bout-level bootstrap and the null from
+splitting a day's bouts in half — both keeping the bout as the sampling unit. The null is
+naturally centred on zero because a ratio of two halves of the same day is symmetric about
+1 (measured median +0.0001).
+
+### D5.3 — Match selection intensity across days, and sweep it
+
+Restricting to sounds near a syllable mode by a **fixed distance** keeps ~12% of sounds
+early in development and ~70% late. Keeping the same *fraction* per day removes this.
+
+**Why this is a decision and not a detail:** the fixed-distance version produced a
+result of 0.90x — juvenile song apparently *less* variable than adult song — which
+exceeded the noise floor and would have read as a genuine, surprising finding. It is
+entirely an artefact of carving a tight core from a broad early distribution while keeping
+nearly all of a narrow late one. Matching the fraction flips the sign to the predicted
+direction, stable at 12%, 30% and 60%.
+
+**The general rule now applied:** when a filter's stringency varies systematically with the
+variable under study, it manufactures an effect in that variable. Any per-day quality
+threshold — amplitude, SNR, cluster distance — carries this risk and must be swept rather
+than trusted at one setting.
+
+### D5.4 — Report both metrics against their own floors, including when both are null
+
+Centroid floor ~0.041 standardised; dispersion floor ~0.22–0.73 in |log variance ratio|,
+and bird-specific (`bl26lb16`'s is 3x the others, from fewer days and types).
+
+**Why:** a manipulation may move either, both, or neither. "Neither" is only interpretable
+as evidence of no change if both were actually measured — otherwise it is just the absence
+of the one test that was run.

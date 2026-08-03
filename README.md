@@ -78,12 +78,30 @@ a design lesson: **compare every timepoint against a pooled baseline, not agains
 preceding timepoint.** A consecutive comparison sees one interval's change buried in noise;
 a fixed reference accumulates change while the noise does not.
 
+5. **Dispersion drift** — a second metric for *variability* rather than location, closing
+   the gap above. [PHASE5_DISPERSION_REPORT.md](PHASE5_DISPERSION_REPORT.md)
+
+### Two metrics, two floors
+
+Song can change by **moving** or by getting **sloppier**, and these are largely independent
+(Spearman ρ = +0.05 to +0.41, non-significant in all three birds). Report both, each against
+its own noise floor:
+
+| Metric | Question | Adult noise floor |
+|---|---|---|
+| Centroid drift | did the syllable move? | ~0.041 standardised |
+| Dispersion drift | did it get sloppier? | ~0.22–0.73 \|log variance ratio\| |
+
+The dispersion metric recovers the developmental effect the centroid metric missed:
+juvenile song is **1.43× more variable** than crystallized song (floor 1.15×), where
+consecutive-day centroid drift showed a ratio of 1.0× — no effect at all.
+
 ### Known gap
 
-The drift metric measures a **centroid shift**. A manipulation that increased
-rendition-to-rendition *variability* without moving the mean would be invisible to it — and
-that is a plausible signature of a reopened critical period. A dispersion-drift metric is
-the most valuable next addition.
+Sensitivity curves (Phase 4) have not been repeated for dispersion, so there is no answer
+yet to "how many bouts to detect a 1.2× variance change". Total variance is also a scalar
+summary — a change in the *shape* of the rendition cloud that preserved its trace would
+still be missed.
 
 Statistical guardrails: within-bird longitudinal only; every drift number carries an
 uncertainty estimate; the null is established before any signal is claimed; power is
