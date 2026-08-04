@@ -627,3 +627,56 @@ so the default install is 235 MB rather than several gigabytes.
 **Verification:** a clean Python 3.12 environment now installs the package and passes all
 259 tests, and the worked example recovers its injected effect. That check is worth
 repeating before any release — it is the only one that catches this class of defect.
+
+
+---
+
+## Phase 7 — Canary and the 11-day window (2026-08-04)
+
+### D7.1 — Summarise day-to-day drift with the MEDIAN, and always plot the day x day matrix
+
+Canary `llb3`'s mean 1-day drift is 0.104, above its 0.079 floor. Its median is 0.027, well
+below. The mean is carried entirely by one transition night out of ten pairs.
+
+**Why:** drift can be episodic rather than gradual. A mean over day-separations mixes
+near-zero within-state pairs with very large across-state pairs and reports something true
+of neither. The drift-versus-separation curve compounds it -- `llb3`'s curve peaks at 5 days
+and then *declines*, purely from which pairs straddle the switch. Only the full matrix shows
+the block structure.
+
+### D7.2 — Treat spontaneous reorganisation as a first-class confound
+
+`llb3` switched song state between two consecutive days by 8.9x its own noise floor, then
+was stable for five days, with no manipulation. Verified not an artefact of the PCA
+reference day (ratio 16.0-17.1x under four different reference days), not time-of-day (all
+days span ~5.7-18.3 h), and not recording volume (245 vs 364 bouts either side).
+
+**Why it is in the protocol rather than a footnote:** the same bird sampled at day 0 versus
+day 10 would have produced a ~10x-floor "effect" caused by nothing; sampled at day 0 versus
+day 4, nothing at all. Timepoint choice alone can create or erase a large effect in an
+open-ended learner. The mitigation is enough baseline days to estimate the spontaneous
+transition rate, and more than two timepoints.
+
+### D7.3 — Scale STFT window and hop with sample rate
+
+The spectrogram hard-coded 32 kHz when computing output width, so at 44.1 kHz a nominal
+200 ms `max_duration_s` kept only the first 145 ms of each syllable.
+
+**Why this was not caught earlier:** everything before was 32 kHz. All canary data is
+44.1 kHz, and the Duke deposit mixes 44.1 and 32 kHz *within one dataset*, so the toolkit
+would have silently analysed those birds on different physical windows.
+
+**Worth recording about the test:** the first version asserted that all output columns were
+occupied, which a truncated syllable also satisfies -- it fills every column, it just
+represents less time. The test only became real when it marked the syllable's final 20 ms
+with a distinct frequency and checked that mark survived. A test that cannot fail for the
+right reason is not a test.
+
+### D7.4 — Skip degenerate bootstrap resamples on distinct bouts, not renditions
+
+Resampling bouts with replacement can draw the same bout every time; the bout-level
+estimator then has no variance to form. The guard counted renditions.
+
+**Why:** with a syllable type present in few bouts this is common, not exotic -- probability
+B^-(B-1), which is 50% at B=2. Hit for real on `llb16` (30 syllable types). A rare syllable
+should cost precision, not crash the analysis.

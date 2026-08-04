@@ -135,3 +135,46 @@ class TestAnalyse:
     def test_serialises_to_json_safe_types(self, table, config):
         import json
         json.dumps(analyse(table, config).to_dict())
+
+
+class TestAnnotationBoundaryDefects:
+    """Real annotation files have syllables that overhang the edges of their recording.
+
+    Measured in the TweetyNet canary deposit: 24 syllables in `llb3` start at a negative
+    time (down to -9.5 ms), one has an offset at or before its onset, and offsets running
+    past the end of the file occur in roughly a tenth of recordings. These are annotation
+    boundary artefacts, not corruption, and a pipeline that crashes on them is unusable on
+    real data -- while one that silently drops them hides how much data it discarded.
+    """
+
+    def test_clamps_a_negative_onset_and_counts_it(self, tmp_path, config):
+        manifest = make_lab_dataset(tmp_path / "lab")
+        table = load_from_manifest(load_manifest(manifest))
+        table.loc[0, "onset_s"] = -0.004
+        features = extract_features(table, config)
+        assert features.n_clamped_onsets == 1
+        assert len(features.values) == len(table)
+
+    def test_clamps_an_offset_past_the_end_of_the_recording(self, tmp_path, config):
+        manifest = make_lab_dataset(tmp_path / "lab")
+        table = load_from_manifest(load_manifest(manifest))
+        table.loc[0, "offset_s"] = 999.0
+        features = extract_features(table, config)
+        assert features.n_clamped_offsets == 1
+        assert len(features.values) == len(table)
+
+    def test_drops_a_syllable_left_empty_after_clamping_and_counts_it(self, tmp_path,
+                                                                     config):
+        manifest = make_lab_dataset(tmp_path / "lab")
+        table = load_from_manifest(load_manifest(manifest))
+        table.loc[0, "onset_s"] = 500.0
+        table.loc[0, "offset_s"] = 501.0
+        features = extract_features(table, config)
+        assert features.n_dropped_empty == 1
+        assert len(features.values) == len(table) - 1
+
+    def test_clean_data_reports_no_defects(self, table, config):
+        features = extract_features(table, config)
+        assert features.n_clamped_onsets == 0
+        assert features.n_clamped_offsets == 0
+        assert features.n_dropped_empty == 0

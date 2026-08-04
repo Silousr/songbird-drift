@@ -18,6 +18,8 @@ measured it is cited. If you read nothing else, read §1 and §7.
 | 5 | **Hold the recording schedule constant, including time of day** | Two days in a public "baseline" dataset were unusable partly because they were morning-only while the rest spanned 10–14 h. |
 | 6 | **Report all three drift metrics, each against its own floor** | A manipulation may move a syllable, make it sloppier, or reorder the sequence. They are largely independent, and "no effect" is only interpretable if all three were measured. |
 | 7 | **The bird is the unit of replication** | Pooling syllables across birds is pseudo-replication and can inflate significance by orders of magnitude. |
+| 8 | **Report the median day-to-day drift, and inspect the full day × day matrix** | Drift can be *episodic*. One canary reorganised its song overnight by 8.9× its own floor, then held stable. Its mean 1-day drift read "above floor"; its median read 0.33× floor. The mean was carried by that one night. |
+| 9 | **Quarantine each bird's first recording day** | The first day is the outlier in three birds across two species and two datasets — habituation to the chamber. |
 
 ## 2. How much song, and in what unit
 
@@ -72,6 +74,33 @@ split the labels, so the smallest achievable one-sided permutation p-value is 1/
 Three birds per group can technically clear α = 0.05, but only in the single most extreme
 arrangement — there is no margin. Four per group is the practical minimum, and that is a
 property of the design, not of this software.
+
+## 3b. Spontaneous reorganisation can masquerade as a treatment effect
+
+This is the failure mode most likely to produce a false positive, and it was only visible
+once a long enough window was analysed ([Phase 7](PHASE7_CANARY_REPORT.md)).
+
+Canary `llb3` sang two stable song "states" over 11 days, separated by a single abrupt
+switch between two consecutive days measuring **8.9× its own noise floor** — then was stable
+again for five days. Nothing was done to that bird.
+
+Had it been a treated animal sampled at day 0 and day 10, the measured drift would have been
+~10× its floor and unmistakably "significant", caused by nothing the experimenter did.
+Sampled at day 0 versus day 4 instead, the same bird would have shown nothing.
+
+Guard against it by:
+
+- **collecting enough baseline days to estimate the bird's own spontaneous transition rate**
+  before any manipulation — one transition in 11 days means a two-timepoint design has a
+  material chance of straddling one;
+- **plotting the full day × day drift matrix**, for baseline and post-treatment alike. A
+  drift-versus-separation curve averages across block structure and hides it; `llb3`'s
+  curve even *declines* past 5 days, purely from which pairs straddle the switch;
+- **using more than two timepoints**, so a step change is distinguishable from a sustained
+  one;
+- treating this as most acute in **open-ended learners** (canaries, starlings), which
+  remodel song seasonally. A closed-ended species such as a Bengalese finch or zebra finch
+  may be safer, but the Bengalese finch window here was too short to rule it out.
 
 ## 4. Baseline design, and a warning
 
@@ -153,9 +182,10 @@ dropping syllables at random splices together transitions the bird never produce
 - **It measures centroid, total variance, and first-order (bigram) syntax.** A change in
   the *shape* of the rendition cloud that preserved its trace, or a change in longer-range
   sequence structure than adjacent pairs, would be missed.
-- **The floors were measured over ≤3-day separations in three Bengalese finches.** Whether
-  day-to-day variability stays constant over weeks is untested and cannot be assumed;
-  measure your own baseline over the timescale you plan to use.
+- **The floors were measured over ≤3-day separations in three Bengalese finches, and out to
+  11 days in two canaries.** Typical day-to-day drift stayed below the floor across that
+  longer window, so the ≥3-day guidance holds to ~10 days. Beyond ~10 days it is still
+  untested; measure your own baseline over the timescale you plan to use.
 - **It has been validated against a developmental effect, not a pharmacological one.** No
   public dataset contains a pharmacological critical-period manipulation with annotated
   audio. The nearest available test — deafening-induced deterioration (Zai et al., 76

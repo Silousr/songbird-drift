@@ -73,6 +73,15 @@ def main() -> None:
         min_renditions=args.min_renditions, n_boot=args.n_boot,
         n_null=args.n_null, seed=args.seed,
     )
+    from songbird.pipeline import extract_features
+    features = extract_features(table, config)
+    repaired = (features.n_clamped_onsets + features.n_clamped_offsets
+                + features.n_dropped_empty)
+    if repaired:
+        print(f"annotation boundary repairs: {features.n_clamped_onsets} negative onsets "
+              f"clamped, {features.n_clamped_offsets} offsets clamped to end of file, "
+              f"{features.n_dropped_empty} empty after clamping\n")
+
     result = analyse(table, config)
     bird = result.birds[args.bird]
 

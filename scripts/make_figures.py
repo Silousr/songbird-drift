@@ -166,11 +166,45 @@ def figure_embedding():
     plt.close(fig)
 
 
+
+
+def figure_canary():
+    """Day-by-day drift matrices for the two canaries: episodic vs gradual."""
+    import json
+    data = {b: load(f"results/phase7/canary_{b}.json") for b in ("llb3", "llb16")}
+    if not all(data.values()):
+        return
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    for ax, (bird, d) in zip(axes, data.items()):
+        pairs = d["day_pairs"]
+        days = sorted({p["day_a"] for p in pairs} | {p["day_b"] for p in pairs})
+        idx = {day: i for i, day in enumerate(days)}
+        M = np.full((len(days), len(days)), np.nan)
+        for p in pairs:
+            i, j = idx[p["day_a"]], idx[p["day_b"]]
+            M[i, j] = M[j, i] = p["centroid_drift_standardised"]
+        floor = d["floors"]["centroid_standardised"]
+        im = ax.imshow(M, cmap="magma", vmin=0, vmax=np.nanmax(M))
+        ax.set_xticks(range(len(days)))
+        ax.set_xticklabels([x[5:] for x in days], rotation=90, fontsize=7)
+        ax.set_yticks(range(len(days)))
+        ax.set_yticklabels([x[5:] for x in days], fontsize=7)
+        ax.set_title(f"{bird} — floor {floor:.3f}")
+        fig.colorbar(im, ax=ax, fraction=0.046, label="centroid drift (standardised)")
+    axes[0].set_xlabel("episodic: two stable plateaus, one abrupt switch")
+    axes[1].set_xlabel("gradual: first day settles, then slow accumulation")
+    fig.suptitle("Canary drift over 9-11 days: day-to-day change is not always gradual",
+                 fontsize=12)
+    fig.tight_layout()
+    fig.savefig(OUT / "05_canary_drift_matrix.png", dpi=200)
+    plt.close(fig)
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     figure_drift_and_floor()
     figure_power()
     figure_validation()
     figure_embedding()
+    figure_canary()
     for path in sorted(OUT.glob("*.png")):
         print(f"wrote {path} ({path.stat().st_size / 1e3:.0f} KB)")

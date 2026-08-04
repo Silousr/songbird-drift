@@ -42,6 +42,7 @@ class SyllableSpectrogram:
 
     n_fft: int = 512
     hop_length: int = 64
+    reference_sample_rate: int = 32_000
     freq_range_hz: tuple[float, float] = (500.0, 10_000.0)
     max_duration_s: float = 0.2
     n_freq_bins: int = 64
@@ -49,8 +50,25 @@ class SyllableSpectrogram:
 
     @property
     def n_time_bins(self) -> int:
-        """Columns in the output, fixed by ``max_duration_s`` and the hop."""
-        return int(round(self.max_duration_s * 32_000 / self.hop_length))
+        """Columns in the output. Constant across sample rates by construction."""
+        return int(round(
+            self.max_duration_s * self.reference_sample_rate / self.hop_length
+        ))
+
+    def _scaled(self, sample_rate: int) -> tuple[int, int]:
+        """Window and hop in samples at ``sample_rate``.
+
+        ``n_fft`` and ``hop_length`` are specified at ``reference_sample_rate`` and scaled
+        to whatever rate the recording actually uses, so a window spans the same number of
+        milliseconds and a hop the same, on any rig. Without this, ``max_duration_s`` means
+        different things at different rates -- at 44.1 kHz a nominally 200 ms window kept
+        only the first 145 ms of every syllable, silently discarding the end of the longer
+        ones. The public deposits this toolkit was validated against mix 32 and 44.1 kHz.
+        """
+        factor = sample_rate / self.reference_sample_rate
+        return max(int(round(self.n_fft * factor)), 16), max(
+            int(round(self.hop_length * factor)), 1
+        )
 
     def _time_bins_for(self, sample_rate: int) -> int:
         return self.n_time_bins
@@ -75,15 +93,16 @@ class SyllableSpectrogram:
         max_samples = int(self.max_duration_s * sample_rate)
         segment = audio[start : min(stop, start + max_samples)]
 
+        n_fft, hop_length = self._scaled(sample_rate)
         n_columns = self._time_bins_for(sample_rate)
-        if len(segment) < self.n_fft:
-            segment = np.pad(segment, (0, self.n_fft - len(segment)))
+        if len(segment) < n_fft:
+            segment = np.pad(segment, (0, n_fft - len(segment)))
 
         frequencies, _, spectrum = stft(
             segment,
             fs=sample_rate,
-            nperseg=self.n_fft,
-            noverlap=self.n_fft - self.hop_length,
+            nperseg=n_fft,
+            noverlap=n_fft - hop_length,
             boundary=None,
             padded=False,
         )

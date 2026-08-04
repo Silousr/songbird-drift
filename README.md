@@ -115,6 +115,22 @@ Worth knowing *how* that went. The consecutive-day framing **failed** this test 
 - compare each timepoint against a **pooled baseline**, not the preceding timepoint;
 - measure **dispersion**, not only centroid movement.
 
+## Drift is not always gradual
+
+![Canary drift matrices](results/figures/05_canary_drift_matrix.png)
+
+Over an 11-day window, one canary sang two stable song states separated by a **single
+abrupt overnight switch measuring 8.9× its own noise floor** — then held stable for five
+more days. Nothing was done to that bird. A treated animal sampled at day 0 and day 10
+would have shown a wildly "significant" effect caused by nothing the experimenter did;
+sampled at day 0 and day 4, nothing at all.
+
+Typical (median) day-to-day drift still sits below the floor out to 11 days, in both
+canaries and in the Bengalese finches — so the ≥3-day guidance holds. But the mean does
+not: for that bird the mean 1-day drift reads *above* floor, carried entirely by the one
+transition night. **Report the median and plot the full day × day matrix.**
+See [PHASE7_CANARY_REPORT.md](PHASE7_CANARY_REPORT.md).
+
 ## Findings that changed the design
 
 Six results came from a guardrail catching something rather than from the planned analysis.
@@ -160,13 +176,14 @@ tests/             each written before its implementation
 [Phase 3 — drift & noise floor](PHASE3_REPORT.md) ·
 [Phase 4 — sensitivity](PHASE4_REPORT.md) ·
 [Phase 5 — dispersion](PHASE5_DISPERSION_REPORT.md) ·
+[Phase 7 — canary, 11-day window](PHASE7_CANARY_REPORT.md) ·
 [Validation](VALIDATION_REPORT.md) · [Decision log](DECISION_LOG.md)
 
 ## Known limits
 
-- Floors were measured over ≤3-day separations in three Bengalese finches. Whether
-  day-to-day variability is stationary over weeks is **untested** — measure your own
-  baseline on the timescale you plan to use.
+- Floors were measured over ≤3-day separations in three Bengalese finches and out to 11 days
+  in two canaries. Beyond ~10 days stationarity is **untested** — measure your own baseline
+  on the timescale you plan to use.
 - Validated against a **developmental** effect in two birds, not a pharmacological one. No public dataset
   contains a pharmacological critical-period manipulation with annotated audio. The nearest
   available test, deafening-induced deterioration (Zai et al., 76 birds), has not been run.
@@ -181,7 +198,7 @@ tests/             each written before its implementation
 | Role | Dataset | Scale |
 |---|---|---|
 | Adult null | [Bengalese Finch Song Repository](https://doi.org/10.6084/m9.figshare.4805749) | 4 birds, 18 bird-days |
-| Adult null | [TweetyNet canary](https://doi.org/10.5061/dryad.xgxd254f4) | 3 birds, 31 bird-days |
+| Adult null, long window | [TweetyNet canary](https://doi.org/10.5061/dryad.xgxd254f4) | 2 birds analysed, 20 bird-days, 598k syllables |
 | Validation | [Duke juvenile zebra finch](https://doi.org/10.7924/r4j38x43h) | 183 bird-days, 163 h |
 | Untouched | [Zai et al. deafening](https://doi.org/10.5281/zenodo.14732250) | 76 birds |
 

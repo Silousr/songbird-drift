@@ -69,13 +69,22 @@ class AnalysisConfig:
 
 @dataclass
 class FeatureSet:
-    """Per-syllable features with the metadata needed for every downstream statistic."""
+    """Per-syllable features with the metadata needed for every downstream statistic.
+
+    The three counters record annotation boundary artefacts that were repaired rather than
+    crashed on. Real deposits contain them -- the TweetyNet canary data has syllables
+    starting at negative times and others whose offset runs past the end of the recording.
+    They are counted so the repair is visible instead of silent.
+    """
 
     values: np.ndarray
     labels: np.ndarray
     days: np.ndarray
     bouts: np.ndarray
     birds: np.ndarray
+    n_clamped_onsets: int = 0
+    n_clamped_offsets: int = 0
+    n_dropped_empty: int = 0
 
 
 @dataclass
@@ -168,6 +177,7 @@ def extract_features(table: pd.DataFrame, config: AnalysisConfig) -> FeatureSet:
     working = working.sort_values(["bird", "timestamp", "onset_s"], kind="stable")
 
     values, labels, days, bouts, birds = [], [], [], [], []
+    n_clamped_onsets = n_clamped_offsets = n_dropped_empty = 0
     for audio_path, group in working.groupby("audio_path", sort=False):
         path = Path(audio_path)
         if not path.exists():
@@ -175,11 +185,18 @@ def extract_features(table: pd.DataFrame, config: AnalysisConfig) -> FeatureSet:
         audio, sample_rate = sf.read(path, dtype="float32")
         limit = len(audio) / sample_rate
         for row in group.itertuples():
-            offset = min(row.offset_s, limit)
-            if offset <= row.onset_s:
+            # Repair annotation overhang at both edges, and count it.
+            onset = row.onset_s
+            if onset < 0:
+                onset, n_clamped_onsets = 0.0, n_clamped_onsets + 1
+            offset = row.offset_s
+            if offset > limit:
+                offset, n_clamped_offsets = limit, n_clamped_offsets + 1
+            if offset <= onset:
+                n_dropped_empty += 1
                 continue
             values.append(
-                spec.extract(audio, sample_rate, row.onset_s, offset).astype(np.float32)
+                spec.extract(audio, sample_rate, onset, offset).astype(np.float32)
             )
             labels.append(row.label)
             days.append(str(row.day))
@@ -189,7 +206,10 @@ def extract_features(table: pd.DataFrame, config: AnalysisConfig) -> FeatureSet:
     stacked = (np.stack(values).reshape(len(values), -1) if values
                else np.zeros((0, config.n_freq_bins * spec.n_time_bins), np.float32))
     return FeatureSet(stacked, np.array(labels), np.array(days),
-                      np.array(bouts), np.array(birds))
+                      np.array(bouts), np.array(birds),
+                      n_clamped_onsets=n_clamped_onsets,
+                      n_clamped_offsets=n_clamped_offsets,
+                      n_dropped_empty=n_dropped_empty)
 
 
 def _syntax_by_day(table, bird: str, types) -> tuple[dict, float]:

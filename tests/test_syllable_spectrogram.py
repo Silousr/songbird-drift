@@ -112,3 +112,55 @@ class TestBatch:
     def test_extract_many_on_empty_list_returns_empty_with_right_dims(self, spec):
         out = spec.extract_many(np.zeros(SR), SR, [])
         assert out.shape == (0, 64, spec.n_time_bins)
+
+
+class TestSampleRateInvariance:
+    """The representation must mean the same thing at any recording rate.
+
+    Window and hop are specified at a reference rate and scaled to the actual one, so
+    ``max_duration_s`` really is 200 ms whether the rig runs at 32 kHz or 44.1 kHz, and a
+    given row is the same frequency band either way. Before this was enforced, a 44.1 kHz
+    recording silently kept only the first 145 ms of every syllable -- and the public
+    deposits this toolkit was validated on mix both rates.
+    """
+
+    def test_output_shape_is_identical_across_sample_rates(self, spec):
+        for sr in (32_000, 44_100, 48_000):
+            audio = embed_in_silence(tone(0.15, sr=sr), 0.2, sr=sr)
+            assert spec.extract(audio, sr, 0.2, 0.35).shape == (64, spec.n_time_bins)
+
+    def test_the_end_of_a_full_length_syllable_survives_at_a_higher_rate(self, spec):
+        # A full-column count proves nothing: a truncated syllable still fills every
+        # column, it just represents less time. So mark the FINAL 20 ms with a distinct
+        # frequency and check that mark is present. This is what catches the truncation.
+        rows = {}
+        for sr in (32_000, 44_100):
+            duration = spec.max_duration_s
+            body = tone(duration - 0.02, freq=3000, sr=sr)
+            tail = tone(0.02, freq=8000, sr=sr)
+            audio = embed_in_silence(np.concatenate([body, tail]), 0.2, sr=sr,
+                                     total_s=1.0)
+            out = spec.extract(audio, sr, 0.2, 0.2 + duration)
+            # Row of the 8 kHz marker, from the band mapping.
+            low, high = spec.freq_range_hz
+            marker_row = int((8000 - low) / (high - low) * spec.n_freq_bins)
+            rows[sr] = out[max(marker_row - 2, 0):marker_row + 3].max()
+        assert rows[44_100] > 0.5, (
+            f"the last 20 ms of a {spec.max_duration_s}s syllable was lost at 44.1 kHz: "
+            f"marker energy {rows[44_100]:.3f} vs {rows[32_000]:.3f} at 32 kHz"
+        )
+
+    def test_the_same_physical_signal_looks_the_same_at_either_rate(self, spec):
+        a = spec.extract(embed_in_silence(tone(0.1, sr=32_000), 0.2, sr=32_000),
+                         32_000, 0.2, 0.3)
+        b = spec.extract(embed_in_silence(tone(0.1, sr=44_100), 0.2, sr=44_100),
+                         44_100, 0.2, 0.3)
+        assert np.abs(a - b).mean() < 0.05
+
+    def test_a_given_frequency_lands_in_the_same_row_at_either_rate(self, spec):
+        rows = []
+        for sr in (32_000, 44_100):
+            out = spec.extract(embed_in_silence(tone(0.1, freq=6000, sr=sr), 0.2, sr=sr),
+                               sr, 0.2, 0.3)
+            rows.append(int(out.mean(axis=1).argmax()))
+        assert abs(rows[0] - rows[1]) <= 1

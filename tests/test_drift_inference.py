@@ -126,3 +126,42 @@ class TestSplitHalfNull:
         points, groups = clustered_sample(n_bouts=1, per_bout=10, seed=0)
         with pytest.raises(ValueError):
             split_half_null(points, groups, n_draws=10, seed=0)
+
+
+class TestDegenerateResamples:
+    """Resampling bouts with replacement can draw the same bout every time.
+
+    With a syllable type present in only a handful of bouts this is common, not exotic:
+    drawing B bouts with replacement from B gives an all-identical draw with probability
+    B^-(B-1), which is 50% at B=2. The bout-level estimator needs two distinct bouts to
+    form a variance, so such draws must be skipped rather than raising -- a rare syllable
+    should cost precision, not crash the analysis. Hit for real on canary llb16, which has
+    30 syllable types.
+    """
+
+    def test_bootstrap_survives_a_two_bout_sample(self):
+        rng = np.random.default_rng(0)
+        a = rng.standard_normal((20, 4))
+        groups_a = np.array(["b0"] * 10 + ["b1"] * 10)
+        b, groups_b = clustered_sample(n_bouts=10, per_bout=4, dims=4, seed=1)
+        estimate, low, high = bootstrap_drift_ci(a, groups_a, b, groups_b,
+                                                 n_boot=200, seed=0)
+        assert np.isfinite([estimate, low, high]).all()
+
+    def test_dispersion_bootstrap_survives_a_two_bout_sample(self):
+        from songbird.drift import bootstrap_dispersion_ci
+
+        rng = np.random.default_rng(0)
+        a = rng.standard_normal((20, 4))
+        groups_a = np.array(["b0"] * 10 + ["b1"] * 10)
+        b, groups_b = clustered_sample(n_bouts=10, per_bout=4, dims=4, seed=1)
+        estimate, low, high = bootstrap_dispersion_ci(a, groups_a, b, groups_b,
+                                                      n_boot=200, seed=0)
+        assert np.isfinite([estimate, low, high]).all()
+
+    def test_raises_only_when_no_draw_could_ever_succeed(self):
+        single = np.random.default_rng(0).standard_normal((5, 4))
+        groups = np.array(["only"] * 5)
+        other, other_groups = clustered_sample(n_bouts=10, per_bout=4, dims=4, seed=1)
+        with pytest.raises(ValueError):
+            bootstrap_drift_ci(single, groups, other, other_groups, n_boot=50, seed=0)

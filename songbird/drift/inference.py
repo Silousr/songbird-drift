@@ -67,7 +67,10 @@ def bootstrap_drift_ci(
     draws = []
     for _ in range(n_boot):
         index_a, index_b = _resample(by_a, keys_a, rng), _resample(by_b, keys_b, rng)
-        if len(index_a) < 2 or len(index_b) < 2:
+        # Distinct bouts, not renditions: the bout-level estimator needs two of them to
+        # form a variance, and resampling with replacement can draw one bout repeatedly.
+        if (len(np.unique(groups_a[index_a])) < 2
+                or len(np.unique(groups_b[index_b])) < 2):
             continue
         draws.append(unbiased_squared_centroid_distance(
             a[index_a], b[index_b], groups_a[index_a], groups_b[index_b]
@@ -118,7 +121,7 @@ def split_half_null(
         left_keys, right_keys = shuffled[:half], shuffled[half:]
         left = np.concatenate([by_group[key] for key in left_keys])
         right = np.concatenate([by_group[key] for key in right_keys])
-        if len(left) < 2 or len(right) < 2:
+        if (len(np.unique(groups[left])) < 2 or len(np.unique(groups[right])) < 2):
             continue
         splits.append((list(left_keys), list(right_keys)))
         values.append(unbiased_squared_centroid_distance(
