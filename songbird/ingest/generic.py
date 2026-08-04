@@ -27,7 +27,8 @@ import pandas as pd
 
 from songbird.ingest.schema import SYLLABLE_COLUMNS, empty_table, finalise_table
 
-__all__ = ["build_manifest", "load_from_manifest", "load_manifest", "MANIFEST_COLUMNS"]
+__all__ = ["build_manifest", "load_flat_annotations", "load_from_manifest",
+           "load_manifest", "MANIFEST_COLUMNS"]
 
 MANIFEST_COLUMNS = ("bird", "timestamp", "audio_path", "annot_path")
 OPTIONAL_COLUMNS = ("group",)
@@ -183,3 +184,104 @@ def build_manifest(
     if out:
         manifest.to_csv(out, index=False)
     return manifest
+
+
+FLAT_COLUMNS = {"audio_file": "audio_file", "onset_s": "onset_s",
+                "offset_s": "offset_s", "label": "label"}
+
+
+def load_flat_annotations(
+    annotation_csv: str | Path,
+    audio_root: str | Path,
+    bird: str,
+    timestamp_pattern: str,
+    timestamp_format: str,
+    columns: dict | None = None,
+    source: str = "lab",
+    on_missing: str = "raise",
+    group: str | None = None,
+) -> pd.DataFrame:
+    """Load a single annotation table that describes many recordings.
+
+    A common export shape: one CSV whose rows carry an ``audio_file`` column, rather than
+    one annotation file per recording. Raven selection tables and the TweetyNet canary
+    deposit are both like this.
+
+    Timestamps are parsed from the audio filename using an explicit regex (with a
+    ``timestamp`` named group) and strptime format. Explicit rather than inferred, for the
+    same reason the manifest loader exists: a guessed filename convention is how a time
+    axis gets silently corrupted, and this project has already found two datasets where
+    that would have happened.
+    """
+    if on_missing not in ("raise", "skip"):
+        raise ValueError(f"on_missing must be 'raise' or 'skip', got {on_missing!r}")
+
+    mapping = {**FLAT_COLUMNS, **(columns or {})}
+    frame = pd.read_csv(annotation_csv)
+    missing = [source_name for source_name in mapping.values()
+               if source_name not in frame.columns]
+    if missing:
+        raise ValueError(
+            f"{annotation_csv}: annotation table is missing column(s) {missing}. "
+            f"Pass `columns=` to map your own names onto "
+            f"{sorted(FLAT_COLUMNS)}"
+        )
+
+    compiled = re.compile(timestamp_pattern)
+    if "timestamp" not in compiled.groupindex:
+        raise ValueError("timestamp_pattern must contain a named group 'timestamp'")
+
+    audio_root = Path(audio_root)
+    # Index the tree once; deposits often nest audio under a subdirectory.
+    by_name: dict[str, Path] = {}
+    for path in audio_root.rglob("*"):
+        if path.is_file():
+            by_name.setdefault(path.name, path)
+
+    rows: list[dict] = []
+    missing_audio: set[str] = set()
+    for record in frame.itertuples():
+        name = Path(str(getattr(record, mapping["audio_file"]))).name
+        path = by_name.get(name)
+        if path is None:
+            if on_missing == "raise":
+                raise FileNotFoundError(
+                    f"audio file referenced by {annotation_csv} not found under "
+                    f"{audio_root}: {name}"
+                )
+            missing_audio.add(name)
+            continue
+
+        match = compiled.search(name)
+        if match is None:
+            raise ValueError(
+                f"{name}: could not extract a timestamp with pattern "
+                f"{timestamp_pattern!r}"
+            )
+        try:
+            timestamp = pd.to_datetime(match["timestamp"], format=timestamp_format)
+        except ValueError as exc:
+            raise ValueError(
+                f"{name}: timestamp did not match {timestamp_format!r}: {exc}"
+            ) from exc
+
+        onset = float(getattr(record, mapping["onset_s"]))
+        offset = float(getattr(record, mapping["offset_s"]))
+        if offset <= onset:
+            continue
+        row = {
+            "bird": bird, "day": timestamp.date(),
+            "timestamp": timestamp.to_pydatetime(),
+            "audio_file": name, "audio_path": str(path), "template": None,
+            "onset_s": onset, "offset_s": offset, "duration_s": offset - onset,
+            "label": str(getattr(record, mapping["label"])), "source": source,
+        }
+        if group is not None:
+            row["group"] = group
+        rows.append(row)
+
+    all_columns = list(SYLLABLE_COLUMNS) + (["group"] if group is not None else [])
+    table = finalise_table(rows, all_columns) if rows else empty_table(all_columns)
+    table.attrs["n_missing_audio"] = len(missing_audio)
+    table.attrs["n_bouts"] = int(table["audio_file"].nunique()) if len(table) else 0
+    return table
