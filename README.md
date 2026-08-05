@@ -104,7 +104,14 @@ warning sign.
 
 ## Validation
 
-Recovered a documented effect from public data: **juvenile song is ~1.4× more variable than
+**Deafening — an adult manipulation, the target condition.** 19 of 19 deafened adult zebra
+finches drift past their own within-day noise floor, at a **median 122× that floor**, with a
+median **4 days** before the effect first becomes visible (paired within-bird, p = 0.0001).
+Target-syllable pitch moved 3–11%, or 2.7–7.2 baseline SDs. Each bird's floor came from its
+own pre-deafening days, so nothing was borrowed across animals.
+See [VALIDATION_DEAFENING.md](VALIDATION_DEAFENING.md).
+
+**Development — a second, independent effect.** Recovered a documented effect from public data: **juvenile song is ~1.4× more variable than
 crystallized song**, replicated in two independent zebra finches — 1.43× against a 1.15×
 floor in one, 1.41× against 1.36× in the other
 ([VALIDATION_REPORT.md](VALIDATION_REPORT.md), [Phase 5](PHASE5_DISPERSION_REPORT.md)).
@@ -177,16 +184,22 @@ tests/             each written before its implementation
 [Phase 4 — sensitivity](PHASE4_REPORT.md) ·
 [Phase 5 — dispersion](PHASE5_DISPERSION_REPORT.md) ·
 [Phase 7 — canary, 11-day window](PHASE7_CANARY_REPORT.md) ·
-[Validation](VALIDATION_REPORT.md) · [Decision log](DECISION_LOG.md)
+[Validation: deafening](VALIDATION_DEAFENING.md) ·
+[Validation: development](VALIDATION_REPORT.md) · [Decision log](DECISION_LOG.md)
 
 ## Known limits
 
 - Floors were measured over ≤3-day separations in three Bengalese finches and out to 11 days
   in two canaries. Beyond ~10 days stationarity is **untested** — measure your own baseline
   on the timescale you plan to use.
-- Validated against a **developmental** effect in two birds, not a pharmacological one. No public dataset
-  contains a pharmacological critical-period manipulation with annotated audio. The nearest
-  available test, deafening-induced deterioration (Zai et al., 76 birds), has not been run.
+- Validated against **deafening** (19 adult birds) and **development** (2 juveniles), not
+  against a pharmacological manipulation — no public dataset contains one. Deafening removes
+  auditory feedback; a drug reopening the critical period would not. Both destabilise
+  crystallized song, which is what makes deafening the best available proxy, but they are
+  not the same manipulation.
+- The deafening test used the authors' derived **pitch** measurements, so it validates the
+  drift *statistic* on adult song, not this toolkit's own audio→embedding path (that is
+  validated separately on Bengalese finch and zebra finch development).
 - Syntax is first-order (adjacent pairs). Longer-range sequence structure is not covered.
 - Dispersion uses total variance; a change in the *shape* of the rendition cloud that
   preserved its trace would be missed.
@@ -200,7 +213,7 @@ tests/             each written before its implementation
 | Adult null | [Bengalese Finch Song Repository](https://doi.org/10.6084/m9.figshare.4805749) | 4 birds, 18 bird-days |
 | Adult null, long window | [TweetyNet canary](https://doi.org/10.5061/dryad.xgxd254f4) | 2 birds analysed, 20 bird-days, 598k syllables |
 | Validation | [Duke juvenile zebra finch](https://doi.org/10.7924/r4j38x43h) | 183 bird-days, 163 h |
-| Untouched | [Zai et al. deafening](https://doi.org/10.5281/zenodo.14732250) | 76 birds |
+| Validation, adult manipulation | [Zai et al. deafening](https://doi.org/10.3929/ethz-b-000670443) | 19 birds analysed of 82 |
 
 The widely-used Koumura BirdsongRecognition dataset has **no recoverable time axis** and
 cannot support drift analysis, despite being the most-cited annotated Bengalese finch

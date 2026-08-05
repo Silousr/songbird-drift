@@ -12,7 +12,7 @@ measured it is cited. If you read nothing else, read §1 and §7.
 | # | Decision | Why |
 |---|---|---|
 | 1 | **Record ~80 song bouts per bird per timepoint** (~8 min of song for a Bengalese finch) | Below this, sensitivity falls fast. Above it, precision is already finer than the bird's own day-to-day variability, so extra recording cannot strengthen a claim. |
-| 2 | **Space timepoints ≥3 days apart** | Consecutive-day change is smaller than within-day variability. The usable signal window opens at ~3 days. |
+| 2 | **Space timepoints ≥3 days apart, and put the first post-treatment timepoint no earlier than ~4 days** | Consecutive-day change is smaller than within-day variability; the usable window opens at ~3 days. In deafened birds the median time before drift cleared the floor was **4 days**, and one bird took 26. |
 | 3 | **Compare every timepoint against a *pooled baseline*, not against the previous timepoint** | On the validation dataset this was the difference between detecting a known effect and missing it entirely. |
 | 4 | **Collect ≥5 baseline days per bird, all before any manipulation** | The baseline defines the bird's own noise floor. It cannot be borrowed from another bird — measured floors differ 3-fold between individuals. |
 | 5 | **Hold the recording schedule constant, including time of day** | Two days in a public "baseline" dataset were unusable partly because they were morning-only while the rest spanned 10–14 h. |
@@ -186,10 +186,11 @@ dropping syllables at random splices together transitions the bird never produce
   11 days in two canaries.** Typical day-to-day drift stayed below the floor across that
   longer window, so the ≥3-day guidance holds to ~10 days. Beyond ~10 days it is still
   untested; measure your own baseline over the timescale you plan to use.
-- **It has been validated against a developmental effect, not a pharmacological one.** No
-  public dataset contains a pharmacological critical-period manipulation with annotated
-  audio. The nearest available test — deafening-induced deterioration (Zai et al., 76
-  birds) — has not been run.
+- **It has been validated against deafening and against development, not against a
+  pharmacological manipulation.** Deafening drove 19/19 adult birds past their own floor at
+  a median 122x ([VALIDATION_DEAFENING.md](VALIDATION_DEAFENING.md)), which is the closest
+  available proxy for the target condition. But deafening removes auditory feedback and a
+  drug would not; no public dataset contains a pharmacological critical-period manipulation.
 - **The species matters.** Numbers here come from Bengalese finch and one zebra finch. The
   1/N scaling should transfer; the absolute floors will not. Re-run the curves on your own
   baseline.
