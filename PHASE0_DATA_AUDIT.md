@@ -209,9 +209,9 @@ Design [REPORTED, from the eLife paper]: **76 adult zebra finches**, 90–300 dp
 "at least 3 days" baseline before any manipulation; **44 deafened birds** recorded 13–50
 days post-deafening; white-noise reinforcement over 8–15 days.
 
-This is the best available "known effect" for the project's stated validation goal —
-deafening-induced deterioration of crystallized adult song is large and well documented,
-and it is the closest public analogue to "the window reopened."
+This is the best available "known effect" for the project's validation goal —
+deafening-induced deterioration of crystallized adult song is large, well documented, and
+the best-characterised public example of an adult manipulation that destabilises song.
 
 **Two risks, both real:**
 
@@ -251,15 +251,15 @@ usable audio [all REPORTED]:
 
 | Dataset | Design | What is actually deposited |
 |---|---|---|
-| Vellema 2019 ([10.5061/dryad.kb814nh](https://doi.org/10.5061/dryad.kb814nh)) | **Canary testosterone implant → withdrawal → re-implant, ~1 year, 6 birds** — a natural window-reopening timecourse, and the single best-designed study for this project's question | Sound Analysis Pro **SQL feature databases** only. No audio |
+| Vellema 2019 ([10.5061/dryad.kb814nh](https://doi.org/10.5061/dryad.kb814nh)) | **Canary testosterone implant → withdrawal → re-implant, ~1 year, 6 birds** — a hormone-driven plasticity timecourse in adults, and the single best-designed study of its kind | Sound Analysis Pro **SQL feature databases** only. No audio |
 | Toutounji et al. 2024 ([10.5061/dryad.3r2280gpp](https://doi.org/10.5061/dryad.3r2280gpp)) | Juvenile pitch-shift learning, 22 birds, 42.89 GB | `.mat` pitch values + timestamps. No audio |
 | Moorman, Ahn & Kao 2021 | Chronic LMAN manipulation, multi-day song change | Entire deposit is one 43,520-byte `.xls` |
 | Sasahara/Tchernichovski/Okanoya | Bengalese finch song development, 12 birds | SAP MySQL tables only |
 | TweetyNet results ([10.5061/dryad.gtht76hk4](https://doi.org/10.5061/dryad.gtht76hk4)) | — | Model checkpoints only |
 
-**Vellema is worth an email.** A year-long hormone-driven plasticity timecourse in canaries
-is a closer analogue to "reopening a closed critical period" than anything else found, and
-only the derived features were deposited.
+**Vellema is worth an email.** A year-long hormone-driven plasticity timecourse in adult
+canaries is a closer analogue to sustained adult song remodelling than anything else found,
+and only the derived features were deposited.
 
 ### Clean negatives [REPORTED]
 
@@ -298,7 +298,7 @@ Public data supports within-bird drift analysis, with a clean division of labor:
 
 1. **The adult noise floor is the binding constraint, not the drift signal.** Longest
    unmanipulated adult run available is 11 consecutive days (canary); the Bengalese finch
-   gives 3–5. A wet-lab experiment measuring drift over weeks will have a noise floor
+   gives 3–5. An experiment measuring drift over weeks will have a noise floor
    estimated from ≤11-day windows and extrapolated. **That extrapolation must be stated as
    a limitation of the power analysis, not hidden inside it.** Whether day-to-day variance
    is stationary over longer spans is not answerable from public data.
@@ -306,17 +306,18 @@ Public data supports within-bird drift analysis, with a clean division of labor:
    in MATLAB tables. Phase 1's "recover the existing hand labels" is a canary/Bengalese
    finch task. For Duke, label recovery *is* the Phase 2 fidelity check.
 3. **Species mismatch is real.** The positive control is zebra finch development; the
-   intended application is a pharmacological manipulation of crystallized adult song,
+   intended application is an experimental manipulation of crystallized adult song,
    possibly in another species. Recovering a developmental effect proves the metric has
    sensitivity; it does not prove it is calibrated for adult drift. Both must be reported.
 
 ### What no public dataset provides
 
-Nothing public offers a **pharmacological critical-period manipulation in adult songbirds
-with annotated audio**. The Vellema testosterone timecourse is the nearest analogue and
-only its derived features were deposited. The wet lab will be generating genuinely novel
-data — which is the point, but it means the tool cannot be end-to-end validated on its
-actual target condition before the experiment runs. Deafening is the closest proxy.
+Public deposits cover deafening, lesions, auditory-feedback perturbation and development.
+They do **not** cover every manipulation a lab might want to apply, and the Vellema
+testosterone timecourse — the nearest thing to sustained adult remodelling — deposited only
+derived features. A lab applying a manipulation of its own will therefore be generating
+genuinely novel data, so the tool cannot be validated end-to-end on that exact condition
+beforehand. Deafening is the closest available proxy.
 
 ---
 

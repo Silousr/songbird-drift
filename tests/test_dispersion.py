@@ -1,9 +1,9 @@
 """Tests for dispersion drift — change in rendition-to-rendition variability.
 
 The centroid metric (Phase 3) asks whether a syllable type *moved*. This asks whether it
-got *sloppier*. A manipulation that reopened a critical period might well destabilise
-renditions without shifting their average, and that change is completely invisible to a
-centroid distance — the gap recorded in the Phase 4 report.
+got *sloppier*. A manipulation might well destabilise renditions without shifting their
+average, and that change is completely invisible to a centroid distance — the gap recorded
+in the Phase 4 report.
 
 The statistic is the log ratio of total variance, ``log(tr Var(b) / tr Var(a))``:
 

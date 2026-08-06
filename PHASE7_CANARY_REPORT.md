@@ -18,7 +18,7 @@ windows is untested. Canary gives 9–11 *consecutive* days — roughly triple t
 a second species. Canaries are also **open-ended learners**: unlike Bengalese finches they
 modify song across seasons, and these recordings come from the breeding season, when that
 plasticity is active. That makes them the closest natural analogue available to the
-"reopened critical period" this toolkit is built to detect.
+destabilisation of crystallized song this toolkit is built to detect.
 
 Getting the data took some doing. Dryad is inaccessible without a bearer token or by
 defeating a proof-of-work bot wall; Zenodo mirrors the same DOI and its files came down
@@ -125,7 +125,7 @@ roughly a tenth of files.
   Whether a closed-ended species shows episodic reorganisation at all is untested; the
   Bengalese finch window is too short to have detected one.
 - **11 days is still not weeks.** The stationarity question is answered for ~10 days, not
-  for the multi-week timescale a pharmacological experiment might use.
+  for the multi-week timescale a manipulation experiment might use.
 - `llb11` (6.5 GB, 11 more days) was not downloaded; it would make a third bird.
 
 ## Reproducing

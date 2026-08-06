@@ -10,11 +10,10 @@ This was the largest remaining gap in the project and it is now closed.
 
 ## Why this test and not another
 
-The intended application is a pharmacological manipulation of crystallized adult song. No
-public dataset contains one with usable data. The nearest available analogue is **deafening**:
-remove an adult songbird's cochleae and its song deteriorates over weeks. The effect is
-large, documented for decades, and — like a reopened critical period — it is a loss of the
-stability that crystallization established.
+The intended application is an experimental manipulation of crystallized adult song. The
+best-documented public example is **deafening**: remove an adult songbird's cochleae and its
+song deteriorates over weeks. The effect is large, documented for decades, and it is a loss
+of exactly the stability that crystallization established.
 
 Data: **Zai, Stepien, Giret & Hahnloser (2024)**, eLife
 [10.7554/eLife.90445](https://doi.org/10.7554/eLife.90445), derived dataset
@@ -100,9 +99,9 @@ on Bengalese finch (Phases 1–2) and on zebra finch development (Phase 5).
 "Centroid drift" here is a shift in mean pitch and "dispersion drift" a change in pitch
 variability. A full repertoire-wide analysis would need the audio.
 
-**And:** deafening is a proxy. It removes auditory feedback; a drug that reopened the
-critical period would not. Both destabilise crystallized song, which is what makes deafening
-the best available test, but they are not the same manipulation.
+**And:** deafening is a proxy. It acts by removing auditory feedback; a manipulation acting
+through a different route need not produce the same signature. Both destabilise crystallized
+song, which is what makes deafening a good available test, but they are not interchangeable.
 
 ## What it says for a real experiment
 

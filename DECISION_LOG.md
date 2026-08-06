@@ -131,12 +131,12 @@ recorded now so they are not discovered later as if they were results:
    power analysis for a weeks-long experiment necessarily extrapolates the noise floor
    beyond its observed window. This must appear as a stated limitation of the sensitivity
    curves, not be buried inside them.
-2. The positive control is **zebra finch development**; the intended application is
-   pharmacological manipulation of **crystallized adult** song. Recovering a developmental
+2. The positive control is **zebra finch development**; the intended application is an
+   experimental manipulation of **crystallized adult** song. Recovering a developmental
    effect demonstrates sensitivity, not calibration for adult drift. Both get reported.
 
-No public dataset provides a pharmacological critical-period manipulation in adult
-songbirds with annotated audio. Deafening (Zai et al.) is the closest proxy.
+Public deposits do not cover every manipulation a lab might apply. Deafening (Zai et al.)
+is the closest available proxy.
 
 ---
 
@@ -396,7 +396,7 @@ found to contain 10 files templated `washout` — a post-perturbation recovery p
 eightfold, which would then have been reported as the noise floor and made the tool look
 far less sensitive than it is.
 
-**The general lesson, recorded for the wet lab:** two of five days in a curated public
+**The general lesson, for any lab using this:** two of five days in a curated public
 "baseline" repository were unusable as baseline. Genuine baseline days must be
 demonstrably distant from any manipulation and recorded on a constant schedule — including
 time-of-day coverage, which differed sharply on both excluded days (2–3 h morning-only
@@ -484,9 +484,9 @@ describe sensitivity to a **centroid shift** only.
 
 **Why it matters:** a manipulation that increased rendition-to-rendition *variability*
 without moving the mean would be invisible to this statistic — and increased variability is
-a plausible signature of a reopened critical period, arguably more plausible than a clean
+a plausible signature of destabilised song, arguably more plausible than a clean
 directional shift. Recorded as the most valuable extension rather than left for someone to
-discover after running the experiment.
+discover after running an experiment.
 
 ---
 
@@ -504,7 +504,7 @@ flat (ratio 0.95x), so the effect is not hiding in dispersion either.
 worked (distance to a fixed reference) and report a clean success. The negative is the more
 useful half — it shows the consecutive-day framing is underpowered for real developmental
 change, which is a property of the *design*, not of this dataset, and which would otherwise
-have surfaced only after a wet-lab experiment had been run.
+have surfaced only after a real experiment had been run.
 
 ### V2 — Compare each timepoint to a pooled baseline, not to the preceding timepoint
 
@@ -540,7 +540,7 @@ prevent. Better a conservative unit than a clever one that might be wrong.
 The analysis uses the original authors' VAE latents.
 
 **Why it still counts:** the drift statistic — bias correction, bout clustering, bootstrap
-intervals — is what Phases 3 and 4 built and what a wet lab would rely on, and it is
+intervals — is what Phases 3 and 4 built and what a lab would rely on, and it is
 exercised end-to-end here against an independently documented effect. But validating our
 own audio-to-embedding path would need the raw audio (291 GB against 30 GB free), so the
 claim is deliberately limited. Phases 1-2 establish that path separately on Bengalese finch.
@@ -556,7 +556,7 @@ translation, so it measures something the centroid distance structurally cannot.
 
 **Why:** Phase 4 recorded that a manipulation increasing rendition-to-rendition
 variability without moving the mean would be invisible — and destabilised renditions are a
-plausible signature of a reopened critical period. The validation then confirmed the
+plausible signature of destabilised song. The validation then confirmed the
 concern was real: on `grn394`, consecutive-day centroid drift gave a learning/crystallised
 ratio of 1.0x (no effect), while dispersion gives 1.43x against a 1.15x floor.
 

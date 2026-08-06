@@ -1,7 +1,7 @@
 # Phase 3 — Drift Metric and Within-Bird Noise Floor
 
 **Date:** 2026-08-03
-**Question:** How much does unmanipulated adult song vary day to day? That is the floor any "reopening" signal must clear.
+**Question:** How much does unmanipulated adult song vary day to day? That is the floor any claimed effect must clear.
 **Answer:** At 1-day separation, **drift is below the within-day noise floor** — 0.013 vs 0.041 in standardised units, averaged over three birds. Drift reaches the floor at roughly 3 days.
 
 Two things had to be fixed or excluded before that number meant anything, and both are reported below because they would each have produced a confidently wrong answer.
@@ -124,11 +124,11 @@ statement about the mean.
 distinguish real change from within-day variability with this metric at this recording
 volume. Comparisons should be spaced ≥3 days, or aggregate multiple days per timepoint.
 
-**Any claimed "reopening" effect must exceed ~0.04 standardised units** — the within-day
+**Any claimed effect must exceed ~0.04 standardised units** — the within-day
 floor — and should be reported against it explicitly, not against zero.
 
 **A caution the data forced.** Two of five nominally-baseline days in a curated public
-repository turned out to be unusable as baseline. A wet lab must expect the same and record
+repository turned out to be unusable as baseline. A lab must expect the same and record
 genuine baseline days that are demonstrably distant from any manipulation, with the
 recording schedule held constant — including time-of-day coverage, which differed sharply
 on the excluded days (2–3 h morning-only vs 10–14 h full-day elsewhere).

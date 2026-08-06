@@ -1,6 +1,6 @@
 # Experimental Protocol
 
-**For a lab planning an experiment that tests whether a manipulation reopens the song critical period.**
+**For a lab planning an experiment that tests whether a manipulation alters crystallized adult song.**
 
 This is the practical summary. Every number in it was measured, and the phase report that
 measured it is cited. If you read nothing else, read §1 and §7.
@@ -186,11 +186,11 @@ dropping syllables at random splices together transitions the bird never produce
   11 days in two canaries.** Typical day-to-day drift stayed below the floor across that
   longer window, so the ≥3-day guidance holds to ~10 days. Beyond ~10 days it is still
   untested; measure your own baseline over the timescale you plan to use.
-- **It has been validated against deafening and against development, not against a
-  pharmacological manipulation.** Deafening drove 19/19 adult birds past their own floor at
-  a median 122x ([VALIDATION_DEAFENING.md](VALIDATION_DEAFENING.md)), which is the closest
-  available proxy for the target condition. But deafening removes auditory feedback and a
-  drug would not; no public dataset contains a pharmacological critical-period manipulation.
+- **It has been validated against deafening and against development.** Deafening drove
+  19/19 adult birds past their own floor at a median 122x
+  ([VALIDATION_DEAFENING.md](VALIDATION_DEAFENING.md)). But deafening acts by removing
+  auditory feedback, and a manipulation acting through a different route need not produce
+  the same signature — check that the change you expect is one these metrics can see.
 - **The species matters.** Numbers here come from Bengalese finch and one zebra finch. The
   1/N scaling should transfer; the absolute floors will not. Re-run the curves on your own
   baseline.

@@ -4,9 +4,9 @@ Measures how much an individual songbird's crystallized song drifts over time, *
 noise floor measured from that bird's own baseline** — so a change can be called real, or
 not, on evidence rather than on a point estimate.
 
-Built for planning and analysing experiments that ask whether a manipulation reopens the
-song critical period. Birdsong is treated as what it is: a learned motor sequence with a
-syllable inventory and probabilistic syntax. Not language.
+Built for planning and analysing experiments that ask whether an experimental
+manipulation alters crystallized adult song. Birdsong is treated as what it is: a learned
+motor sequence with a syllable inventory and probabilistic syntax. Not language.
 
 **Start here:** [PROTOCOL.md](PROTOCOL.md) — the experimental protocol, in the order a lab
 does things.
@@ -193,10 +193,11 @@ tests/             each written before its implementation
   in two canaries. Beyond ~10 days stationarity is **untested** — measure your own baseline
   on the timescale you plan to use.
 - Validated against **deafening** (19 adult birds) and **development** (2 juveniles), not
-  against a pharmacological manipulation — no public dataset contains one. Deafening removes
-  auditory feedback; a drug reopening the critical period would not. Both destabilise
-  crystallized song, which is what makes deafening the best available proxy, but they are
-  not the same manipulation.
+  against every kind of manipulation a lab might apply. Deafening works by removing
+  auditory feedback; a manipulation acting through another route would not. Both
+  destabilise crystallized song, which is what makes deafening a good available proxy, but
+  they are not interchangeable — check that the effect you expect is one this metric can
+  see.
 - The deafening test used the authors' derived **pitch** measurements, so it validates the
   drift *statistic* on adult song, not this toolkit's own audio→embedding path (that is
   validated separately on Bengalese finch and zebra finch development).

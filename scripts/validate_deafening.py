@@ -6,7 +6,8 @@ while the intended application is a **manipulation of adult crystallized song**.
 different regimes, and the reports have said so throughout.
 
 Deafening an adult songbird causes its song to deteriorate over weeks. The effect is large,
-long documented, and the closest public analogue to "the critical period reopened".
+long documented, and the best-characterised public example of an adult manipulation that
+destabilises crystallized song.
 
 Data: Zai, Stepien, Giret & Hahnloser (2024), eLife 10.7554/eLife.90445, derived dataset
 at doi:10.3929/ethz-b-000670443 (MIT licence). Each bird contributes one measured acoustic

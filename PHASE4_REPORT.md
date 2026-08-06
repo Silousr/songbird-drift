@@ -98,7 +98,7 @@ Practical consequences:
   Once past saturation, statistical power comes from replication and from letting real
   drift accumulate — Phase 3 showed drift grows ~0.012/day and only clears the floor at
   ~3 days.
-- **A candidate "reopening" effect must exceed ~0.04 standardised** — the noise floor —
+- **A candidate effect must exceed ~0.04 standardised** — the noise floor —
   and be reported against it, not against zero.
 
 ## Limitations
@@ -109,7 +109,7 @@ than their centre, or may affect some syllables and not others. These curves the
 describe sensitivity to a **centroid shift**, which is what the Phase 3 metric measures —
 not sensitivity to every possible form of song change. A manipulation that increased
 rendition-to-rendition variability without moving the mean would be invisible to this
-statistic, and that is a plausible signature of a reopened critical period. **Adding a
+statistic, and that is a plausible signature of destabilised song. **Adding a
 variance/dispersion drift metric is the single most valuable extension.**
 
 **Single-bird, single-comparison.** These are within-bird sensitivities. A group design

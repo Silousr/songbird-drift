@@ -79,7 +79,7 @@ Three contributing factors, in order of importance:
 
 **The design recommendation that follows is concrete: compare every timepoint against a
 pooled baseline reference, not against the preceding timepoint.** For an experiment asking
-whether a manipulation reopens the critical period, this roughly doubles the usable signal
+whether a manipulation alters crystallized song, this roughly doubles the usable signal
 for free, and it is the difference between detecting the known effect here and missing it.
 
 ## What this validates, and what it does not
@@ -98,7 +98,7 @@ public data.
 - **The per-type metric.** Duke's syllable-type labels are locked in MATLAB tables this
   pipeline cannot read, and syllable identity is itself ill-defined mid-development. This
   used the whole-distribution form, with a per-cluster variant as a cross-check.
-- **A deafening or pharmacological effect.** Zai et al. (76 birds, 44 deafened) remains
+- **An adult manipulation.** Zai et al. (76 birds, 44 deafened) remains
   the strongest available test and is untouched — 49 GB, and Zenodo blocks file bytes from
   this environment.
 - **Generality.** One bird. `grn395`, `grn397`, `grn475` and `sil469` are available and
@@ -108,7 +108,7 @@ public data.
 
 The metric recovers a known effect, but the exercise mainly demonstrated a **limitation of
 the consecutive-day framing** that Phases 3 and 4 had already hinted at and that would
-otherwise have surfaced only after a wet-lab experiment had been run and analysed. That is
+otherwise have surfaced only after a real experiment had been run and analysed. That is
 what validation is for.
 
 ## Reproducing

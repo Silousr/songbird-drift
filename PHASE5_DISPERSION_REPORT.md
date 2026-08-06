@@ -11,7 +11,7 @@
 Phase 4 recorded the gap plainly: the drift metric measures a **centroid shift**, so a
 manipulation that increased rendition-to-rendition variability *without* moving the mean
 would be invisible. That is not a hypothetical failure mode — destabilised, variable
-renditions are a plausible signature of a reopened critical period, arguably more plausible
+renditions are a plausible signature of destabilised song, arguably more plausible
 than a clean directional shift.
 
 The statistic is the log ratio of total variance, `log(tr Var(b) / tr Var(a))`:
