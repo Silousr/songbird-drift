@@ -79,6 +79,13 @@ Recall that on the same bird and the same latents, **consecutive-day centroid dr
 a ratio of 1.0× — no effect whatsoever.** The dispersion metric recovers a documented
 developmental effect that the centroid metric could not see. That is the gap closed.
 
+> **Correction (2026-08-25).** The dataset authors' real syllable labels became readable
+> and this analysis was re-run with them: `grn394` survives at 1.34× against a 1.26× floor,
+> but **`grn397`'s 1.41× was an artefact of the derived modes and is retracted** — with real
+> labels that bird shows 0.90×, inside its floor. Across all five birds the effect holds in
+> two (one marginal). See [VALIDATION_AUTHOR_LABELS.md](VALIDATION_AUTHOR_LABELS.md).
+> The section below is preserved as originally written.
+
 ### Replicated in a second bird
 
 `grn397` (dph 56–94, endpoint taken from dph 88 since this bird was not recorded as far

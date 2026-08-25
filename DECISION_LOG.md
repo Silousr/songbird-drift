@@ -680,3 +680,37 @@ estimator then has no variance to form. The guard counted renditions.
 **Why:** with a syllable type present in few bouts this is common, not exotic -- probability
 B^-(B-1), which is 50% at B=2. Hit for real on `llb16` (30 syllable types). A rare syllable
 should cost precision, not crash the analysis.
+
+
+---
+
+## Re-analysis with author labels (2026-08-25)
+
+### D8.1 — When the real labels arrived, they replaced the derived ones everywhere
+
+The Duke deposit's per-rendition labels became readable via the authors' CSV export. The
+real inventories are 2-3 syllable types per bird, not the 12 k-means modes the earlier
+validation had to derive.
+
+**What the relabelling changed:** convergence-to-reference strengthened (5/5 birds, 2-24x,
+versus 2.0x whole-distribution); the consecutive-day null was confirmed; and the
+within-type variability claim shrank from "replicated in two birds" to "2 of 5, one
+marginal" -- grn397's 1.41x was an artefact and is retracted in the public docs.
+
+**Why the artefact:** the cluster-based measure took variance over all detected sounds
+near endpoint modes, and the labels show ~75% of detected sounds are not song syllables at
+any age. Retention is nearly flat across development (27% early, 21-23% late), so the
+inflation came from the changing composition and geometry of the unlabeled material, not
+its quantity. A per-day retention check alone would not have caught it.
+
+**The rule this adds:** a result derived from surrogate groupings is provisional until the
+real groupings exist, and the correction gets published in the same place the original
+claim was made -- the report, the README, and the correspondence that cited it.
+
+### D8.2 — State the design limit the labels exposed
+
+grn394 is the only bird recorded deep past crystallisation (late window 100-114 dph). The
+other four birds' "crystallised" windows sit at 85-97 dph, around rather than after
+crystallisation, compressing the early-late contrast. The one bird with a clean post-100
+window is also the one with the clearest variability effect. Recorded as an observation
+with n=1, not a conclusion.

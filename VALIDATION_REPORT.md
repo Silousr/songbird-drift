@@ -1,5 +1,10 @@
 # Validation — Recovering a Known Effect
 
+> **Update (2026-08-25).** Re-run with the dataset authors' own syllable labels, the
+> fixed-reference convergence result strengthens to **5 of 5 birds at 2–24×** and the
+> consecutive-day null is confirmed per type. See
+> [VALIDATION_AUTHOR_LABELS.md](VALIDATION_AUTHOR_LABELS.md).
+
 **Date:** 2026-08-03
 **Question:** Does the drift metric detect a real, independently-documented change in song?
 **Answer: partial success.** The metric recovers developmental convergence toward adult song (**2× effect, non-overlapping confidence intervals**) — but **only when applied as distance to a fixed reference.** The consecutive-day drift framing fails this test outright, and that failure is the more useful result.

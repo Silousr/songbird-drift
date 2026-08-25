@@ -111,10 +111,14 @@ Target-syllable pitch moved 3–11%, or 2.7–7.2 baseline SDs. Each bird's floo
 own pre-deafening days, so nothing was borrowed across animals.
 See [VALIDATION_DEAFENING.md](VALIDATION_DEAFENING.md).
 
-**Development — a second, independent effect.** Recovered a documented effect from public data: **juvenile song is ~1.4× more variable than
-crystallized song**, replicated in two independent zebra finches — 1.43× against a 1.15×
-floor in one, 1.41× against 1.36× in the other
-([VALIDATION_REPORT.md](VALIDATION_REPORT.md), [Phase 5](PHASE5_DISPERSION_REPORT.md)).
+**Development — a second, independent effect.** With the dataset authors' own syllable
+labels (readable since Aug 2026), **per-type convergence toward crystallized song
+replicates in 5 of 5 juvenile zebra finches** at 2–24× the pre-reference distance, and the
+consecutive-day comparison still finds nothing — the fixed-baseline design is what detects
+development. An earlier claim that juvenile song is ~1.4× more variable within syllable
+type, made with cluster-derived labels, only partially survived relabelling: 2 of 5 birds,
+one marginal, and the second bird originally cited was an artefact and is retracted.
+Details and correction in [VALIDATION_AUTHOR_LABELS.md](VALIDATION_AUTHOR_LABELS.md).
 
 Worth knowing *how* that went. The consecutive-day framing **failed** this test outright
 (ratio 1.0×, no effect at all). Two things rescued it, and both became recommendations:
@@ -185,7 +189,9 @@ tests/             each written before its implementation
 [Phase 5 — dispersion](PHASE5_DISPERSION_REPORT.md) ·
 [Phase 7 — canary, 11-day window](PHASE7_CANARY_REPORT.md) ·
 [Validation: deafening](VALIDATION_DEAFENING.md) ·
-[Validation: development](VALIDATION_REPORT.md) · [Decision log](DECISION_LOG.md)
+[Validation: development](VALIDATION_REPORT.md) ·
+[Re-analysis with author labels](VALIDATION_AUTHOR_LABELS.md) ·
+[Decision log](DECISION_LOG.md)
 
 ## Known limits
 
