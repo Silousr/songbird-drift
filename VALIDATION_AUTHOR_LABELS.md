@@ -69,6 +69,10 @@ against the real labels:
   is 72% labeled song and one is 92%; the other ten are 0–7% labeled — calls and cage
   noise. Three modes contain no labeled rendition at any age.
 
+The same check on `grn397` — the retracted bird — gives the same anatomy, cleaner: 98.4%
+purity where labeled song lands, and again exactly **2 of 12 modes are song** (99.8% and
+92.3% labeled at the endpoint; the other ten are 0–3.6%).
+
 The cluster-based dispersion analysis averaged per-mode variance across all twelve modes,
 so roughly ten-twelfths of what it averaged was the variability of non-song sounds across
 development. That is the artefact: not impure clustering, but computing a song statistic
