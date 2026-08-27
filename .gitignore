@@ -37,3 +37,6 @@ results/**/prep_*/
 results/**/*.log
 results/**/lightning_logs/
 results/**/checkpoints/
+
+# Private meeting materials. Never commit; the repo is public.
+meeting/
